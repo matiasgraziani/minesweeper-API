@@ -1,4 +1,4 @@
-package com.deviget.mgraziani.minesweeper.api;
+package com.deviget.mgraziani.minesweeper.api.integration;
 
 import com.deviget.mgraziani.minesweeper.api.domain.Player;
 import com.deviget.mgraziani.minesweeper.api.util.BaseTest;
@@ -12,7 +12,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class PlayerTest extends BaseTest {
+public class PlayerIntegrationTest extends BaseTest {
 
     @Test
     /**
@@ -26,7 +26,7 @@ public class PlayerTest extends BaseTest {
                 .content(objectMapper.writeValueAsString(player)))
                 .andExpect(status().isCreated());
         String content = result.andReturn().getResponse().getContentAsString();
-        assertEquals("{\"id\":2,\"name\":\"Matias\"}", content);
+        assertEquals("{\"id\":1,\"name\":\"Matias\"}", content);
     }
 
     @Test
