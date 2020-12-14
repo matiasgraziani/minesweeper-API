@@ -1,7 +1,7 @@
 databaseChangeLog:
   - changeSet:
       id: 1
-      author: marceloverdijk
+      author: mgraziani
       changes:
         - createTable:
             tableName: Player
@@ -18,3 +18,76 @@ databaseChangeLog:
                   type: varchar(255)
                   constraints:
                     nullable: false
+  - changeSet:
+      id: 2
+      author: mgraziani
+      changes:
+        - createTable:
+            tableName: Game
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: player_id
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: vertical_size
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: horizontal_size
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: mines
+                  type: int
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: 3
+      author: mgraziani
+      changes:
+        - createTable:
+            tableName: Cell
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: vertical
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: horizontal
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: mine
+                  type: bool
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: game_id
+                  type: int
+                  constraints:
+                    nullable: true

@@ -1,24 +1,27 @@
 package com.deviget.mgraziani.minesweeper.api.controller;
 
 import com.deviget.mgraziani.minesweeper.api.domain.Player;
-import com.deviget.mgraziani.minesweeper.api.repository.PlayerRepository;
+import com.deviget.mgraziani.minesweeper.api.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/player")
 public class PlayerController {
 
     @Autowired
-    public PlayerRepository playerRepository;
+    public PlayerService playerService;
 
     @GetMapping(produces = "application/json", value="/{id}")
     public ResponseEntity<Player> get(@PathVariable("id") Long id){
-        if (playerRepository.findById(id).isPresent()) {
-            return new ResponseEntity<Player>(playerRepository.findById(id).get(), HttpStatus.OK);
+        Optional<Player> playerOptional = playerService.findById(id);
+        if (playerOptional.isPresent()) {
+            return new ResponseEntity<Player>(playerOptional.get(), HttpStatus.OK);
         }else{
             return new ResponseEntity<Player>(HttpStatus.NOT_FOUND);
         }
@@ -30,7 +33,7 @@ public class PlayerController {
             return new ResponseEntity<Player>(HttpStatus.BAD_REQUEST);
         }
         player.setId(null);
-        playerRepository.save(player);
+        playerService.save(player);
         return new ResponseEntity<Player>(player, HttpStatus.CREATED);
     }
 }
