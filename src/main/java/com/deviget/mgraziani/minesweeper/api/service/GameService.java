@@ -8,6 +8,7 @@ import com.deviget.mgraziani.minesweeper.api.repository.GameRepository;
 import com.deviget.mgraziani.minesweeper.api.repository.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -28,49 +29,56 @@ public class GameService {
     @Autowired
     private PlayerRepository playerRepository;
 
-    public Game create() {
+    public Game create() throws Exception {
         Player player = playerRepository.findById(DEFAULT_PLAYER).get();
-        Game game = new Game();
-        game.setPlayer(player);
-        game.setMines(DEFAULT_MINES_NUM);
-        game.setHorizontalSize(DEFAULT_HORIZONTAL_SIZE);
-        game.setVerticalSize(DEFAULT_VERTICAL_SIZE);
-
-        Set<Integer> positions = getRandomMinePositions();
-        this.createCells(game, positions);
-
+        Game game = new Game(
+                player,
+                DEFAULT_HORIZONTAL_SIZE,
+                DEFAULT_VERTICAL_SIZE,
+                DEFAULT_MINES_NUM
+        );
         gameRepository.save(game);
         return game;
-    }
-
-    private void createCells(Game game, Set<Integer> positions){
-        int count = 1;
-        for (int h = 1; h <= game.getHorizontalSize(); h++) {
-            for (int v = 1; v <= game.getVerticalSize(); v++) {
-                Cell cell = new Cell();
-                cell.setHorizontal(h);
-                cell.setVertical(v);
-                cell.setStatus(MineStatus.None);
-                if(positions.contains(count)){
-                    cell.setMine(Boolean.TRUE);
-                }else{
-                    cell.setMine(Boolean.FALSE);
-                }
-                count++;
-                game.getCells().add(cell);
-            }
-        }
     }
 
     public Optional<Game> get() {
         return gameRepository.findById(DEFAULT_PLAYER);
     }
 
-    public Set<Integer> getRandomMinePositions(){
-        Set<Integer> positions = new HashSet<>();
-        while(positions.size() < 4) {
-            positions.add(ThreadLocalRandom.current().nextInt(1, 17));
+    @Transactional
+    public Game flagCell(Integer horizontal, Integer vertical) {
+        Optional<Game> gameOptional = this.get();
+        if(gameOptional.isPresent()){
+            Game game = gameOptional.get();
+            Cell cell = game.generateCellMap().get(horizontal + "-" + vertical);
+            cell.setStatus(MineStatus.Flagged);
+            return game;
         }
-        return positions;
+        return null;
     }
+
+    @Transactional
+    public Game questionCell(Integer horizontal, Integer vertical) {
+        Optional<Game> gameOptional = this.get();
+        if(gameOptional.isPresent()){
+            Game game = gameOptional.get();
+            Cell cell = game.generateCellMap().get(horizontal + "-" + vertical);
+            cell.setStatus(MineStatus.QuestionFlag);
+            return game;
+        }
+        return null;
+    }
+
+    @Transactional
+    public Game redFlagCell(Integer horizontal, Integer vertical) {
+        Optional<Game> gameOptional = this.get();
+        if(gameOptional.isPresent()){
+            Game game = gameOptional.get();
+            Cell cell = game.generateCellMap().get(horizontal + "-" + vertical);
+            cell.setStatus(MineStatus.RedFlag);
+            return game;
+        }
+        return null;
+    }
+
 }

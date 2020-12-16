@@ -8,6 +8,12 @@ import javax.persistence.Id;
 @Entity
 public class Player {
 
+    public Player() {}
+
+    public Player(String name) {
+        this.name = name;
+    }
+
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;

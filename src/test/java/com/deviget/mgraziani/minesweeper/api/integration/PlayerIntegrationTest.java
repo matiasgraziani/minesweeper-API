@@ -36,7 +36,7 @@ public class PlayerIntegrationTest extends BaseTest {
     public void testCreateUserBadRequest() throws Exception {
         mockMvc.perform(post("/player")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString("")))
+                .content(objectMapper.writeValueAsString(null)))
                 .andExpect(status().isBadRequest());
     }
 

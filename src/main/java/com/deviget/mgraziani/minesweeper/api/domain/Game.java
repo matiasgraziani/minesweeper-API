@@ -1,11 +1,65 @@
 package com.deviget.mgraziani.minesweeper.api.domain;
 
+import com.deviget.mgraziani.minesweeper.api.exception.InvalidParamsException;
+
 import javax.persistence.*;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Entity
 public class Game {
+
+    public Game(){}
+
+    public Game(Player player, Integer horizontalSize, Integer verticalSize, Integer mines) throws Exception{
+        if(player == null||horizontalSize == null||horizontalSize < 1||
+                verticalSize == null||verticalSize < 1||mines == null||mines < 1||
+                mines > horizontalSize*verticalSize
+        ){
+            throw new InvalidParamsException("Not valid parameters");
+        }
+
+        this.player = player;
+        this.horizontalSize = horizontalSize;
+        this.verticalSize = verticalSize;
+        this.mines = mines;
+        Set<Integer> positions = getRandomMinePositions(horizontalSize, verticalSize, mines);
+        this.createCells(positions);
+    }
+
+    private void createCells(Set<Integer> positions){
+        int count = 1;
+        for (int h = 1; h <= this.getHorizontalSize(); h++) {
+            for (int v = 1; v <= this.getVerticalSize(); v++) {
+                Cell cell = new Cell();
+                cell.setHorizontal(h);
+                cell.setVertical(v);
+                cell.setStatus(MineStatus.Hided);
+                if(positions.contains(count)){
+                    cell.setMine(Boolean.TRUE);
+                }else{
+                    cell.setMine(Boolean.FALSE);
+                }
+                count++;
+                this.getCells().add(cell);
+            }
+        }
+    }
+
+    private Set<Integer> getRandomMinePositions(Integer verticalSize, Integer horizontalSize, Integer mines){
+        Set<Integer> positions = new HashSet<>();
+        Integer max = verticalSize * horizontalSize;
+        while(positions.size() < mines) {
+            positions.add(ThreadLocalRandom.current().nextInt(1, max+1));
+        }
+        return positions;
+    }
+
+    @Transient
+    private Map cellMap = new HashMap<String, Cell>();
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
@@ -26,6 +80,15 @@ public class Game {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name="game_id")
     private Set<Cell> cells = new HashSet<>();
+
+    public Map<String, Cell> generateCellMap(){
+        if (cellMap.isEmpty()){
+            for (Cell cell:this.getCells()) {
+                cellMap.put(cell.getHorizontal() + "-" + cell.getVertical(), cell);
+            }
+        }
+        return cellMap;
+    }
 
     public Long getId() {
         return id;

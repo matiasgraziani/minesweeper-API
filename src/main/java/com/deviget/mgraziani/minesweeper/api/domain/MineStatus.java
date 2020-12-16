@@ -2,8 +2,10 @@ package com.deviget.mgraziani.minesweeper.api.domain;
 
 public enum MineStatus {
     Flagged,
-    None,
+    Hided,
     QuestionFlag,
     RedFlag,
-    Exploited
+    Exploited,
+    Empty,
+    Value
 }

@@ -4,6 +4,7 @@ import com.deviget.mgraziani.minesweeper.api.domain.Cell;
 import com.deviget.mgraziani.minesweeper.api.domain.Game;
 import com.deviget.mgraziani.minesweeper.api.domain.MineStatus;
 import com.deviget.mgraziani.minesweeper.api.domain.Player;
+import com.deviget.mgraziani.minesweeper.api.dto.RequestCellDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
 import org.junit.Test;
@@ -27,6 +28,12 @@ public class GameIntegrationTest extends BaseTest {
         mockMvc.perform(post("/player")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(player)))
+                .andExpect(status().isCreated());
+    }
+
+    public void createDefaultGame() throws Exception {
+        mockMvc.perform(put("/game")
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isCreated());
     }
 
@@ -89,7 +96,7 @@ public class GameIntegrationTest extends BaseTest {
                         .findFirst();
                 assertTrue(cellOptional.isPresent());
                 Cell cell = cellOptional.get();
-                assertEquals(MineStatus.None, cell.getStatus());
+                assertEquals(MineStatus.Hided, cell.getStatus());
                 if(cell.getMine()){
                     count++;
                 }
@@ -97,5 +104,92 @@ public class GameIntegrationTest extends BaseTest {
         }
         assertEquals(count, game.getMines().intValue());
 
+    }
+
+    @Test
+    /**
+     * GET /game/cell/flag should return the game board with the cell flagged
+     */
+    public void testCellFlagged() throws Exception {
+        createDefaultPlayer();
+        createDefaultGame();
+        RequestCellDTO cell = new RequestCellDTO();
+        cell.setHorizontal(1);
+        cell.setVertical(2);
+        ResultActions result = mockMvc.perform(post("/game/cell/flag")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(cell)))
+                .andExpect(status().isOk());
+
+        String content = result.andReturn().getResponse().getContentAsString();
+        JavaType type = objectMapper.getTypeFactory().constructType(Game.class);
+        Game game = objectMapper.readValue(content, type);
+
+        Cell response_cell = game.generateCellMap().get("1-2");
+        assertEquals(response_cell.getStatus(), MineStatus.Flagged);
+
+        response_cell = game.generateCellMap().get("2-1");
+        assertNotEquals(response_cell.getStatus(), MineStatus.Flagged);
+
+        response_cell = game.generateCellMap().get("1-1");
+        assertNotEquals(response_cell.getStatus(), MineStatus.Flagged);
+    }
+
+    @Test
+    /**
+     * GET /game/cell/question should return the game board with the cell flagged question
+     */
+    public void testCellQuestion() throws Exception {
+        createDefaultPlayer();
+        createDefaultGame();
+        RequestCellDTO cell = new RequestCellDTO();
+        cell.setHorizontal(1);
+        cell.setVertical(2);
+        ResultActions result = mockMvc.perform(post("/game/cell/question")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(cell)))
+                .andExpect(status().isOk());
+
+        String content = result.andReturn().getResponse().getContentAsString();
+        JavaType type = objectMapper.getTypeFactory().constructType(Game.class);
+        Game game = objectMapper.readValue(content, type);
+
+        Cell response_cell = game.generateCellMap().get("1-2");
+        assertEquals(response_cell.getStatus(), MineStatus.QuestionFlag);
+
+        response_cell = game.generateCellMap().get("2-1");
+        assertNotEquals(response_cell.getStatus(), MineStatus.QuestionFlag);
+
+        response_cell = game.generateCellMap().get("1-1");
+        assertNotEquals(response_cell.getStatus(), MineStatus.QuestionFlag);
+    }
+
+    @Test
+    /**
+     * GET /game/cell/red-flag should return the game board with the cell flagged red
+     */
+    public void testCellRedFlagged() throws Exception {
+        createDefaultPlayer();
+        createDefaultGame();
+        RequestCellDTO cell = new RequestCellDTO();
+        cell.setHorizontal(1);
+        cell.setVertical(2);
+        ResultActions result = mockMvc.perform(post("/game/cell/red-flag")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(cell)))
+                .andExpect(status().isOk());
+
+        String content = result.andReturn().getResponse().getContentAsString();
+        JavaType type = objectMapper.getTypeFactory().constructType(Game.class);
+        Game game = objectMapper.readValue(content, type);
+
+        Cell response_cell = game.generateCellMap().get("1-2");
+        assertEquals(response_cell.getStatus(), MineStatus.RedFlag);
+
+        response_cell = game.generateCellMap().get("2-1");
+        assertNotEquals(response_cell.getStatus(), MineStatus.RedFlag);
+
+        response_cell = game.generateCellMap().get("1-1");
+        assertNotEquals(response_cell.getStatus(), MineStatus.RedFlag);
     }
 }
