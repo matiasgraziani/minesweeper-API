@@ -91,3 +91,8 @@ databaseChangeLog:
                   type: int
                   constraints:
                     nullable: true
+              - column:
+                  name: adjacent_mines
+                  type: int
+                  constraints:
+                    nullable: true

@@ -17,15 +17,18 @@ public class CellService {
     @Autowired
     private GameService gameService;
 
-    private final List<MineStatus> CAN_BE_FLAGGED = Arrays.asList(MineStatus.Hided, MineStatus.QuestionFlag, MineStatus.RedFlag, MineStatus.Flagged);
+    private final List<MineStatus> CAN_BE_FLAGGED = Arrays.asList(MineStatus.Hided, MineStatus.QuestionFlag,
+            MineStatus.RedFlag, MineStatus.Flagged);
 
     @Transactional
     public Game flagCell(Integer horizontal, Integer vertical) {
         Optional<Game> gameOptional = gameService.get();
         if(gameOptional.isPresent()){
             Game game = gameOptional.get();
-            Cell cell = game.generateCellMap().get(horizontal + "-" + vertical);
-            this.changeCellStatus(cell, MineStatus.Flagged);
+            Optional<Cell> cell = game.findCell(horizontal, vertical);
+            if(cell.isPresent()){
+                this.changeCellStatus(cell.get(), MineStatus.Flagged);
+            }
             return game;
         }
         return null;
@@ -36,8 +39,9 @@ public class CellService {
         Optional<Game> gameOptional = gameService.get();
         if(gameOptional.isPresent()){
             Game game = gameOptional.get();
-            Cell cell = game.generateCellMap().get(horizontal + "-" + vertical);
-            this.changeCellStatus(cell, MineStatus.QuestionFlag);
+            Optional<Cell> cell = game.findCell(horizontal, vertical);
+            if(cell.isPresent())
+                this.changeCellStatus(cell.get(), MineStatus.QuestionFlag);
             return game;
         }
         return null;
@@ -48,8 +52,9 @@ public class CellService {
         Optional<Game> gameOptional = gameService.get();
         if(gameOptional.isPresent()){
             Game game = gameOptional.get();
-            Cell cell = game.generateCellMap().get(horizontal + "-" + vertical);
-            this.changeCellStatus(cell, MineStatus.RedFlag);
+            Optional<Cell> cell = game.findCell(horizontal, vertical);
+            if(cell.isPresent())
+                this.changeCellStatus(cell.get(), MineStatus.RedFlag);
             return game;
         }
         return null;
@@ -63,13 +68,27 @@ public class CellService {
         }
     }
 
+    @Transactional
     public Game clickCell(Integer horizontal, Integer vertical) {
         Optional<Game> gameOptional = gameService.get();
         if(gameOptional.isPresent()){
             Game game = gameOptional.get();
-            Cell cell = game.generateCellMap().get(horizontal + "-" + vertical);
-            cell.setStatus(MineStatus.Empty);
-            return game;
+            Optional<Cell> cellOptional = game.findCell(horizontal, vertical);
+            if(cellOptional.isPresent() && CAN_BE_FLAGGED.contains(cellOptional.get().getStatus())){
+                Cell cell = cellOptional.get();
+                if(cell.getMine()){
+                    //FIXME GAME OVER
+                }else{
+                    int mineCount = game.getProximityMines(cell.getHorizontal(), cell.getVertical());
+                    if(mineCount != 0){
+                        cell.setStatus(MineStatus.Value);
+                        cell.setAdjacentMines(mineCount);
+                    }else{
+                        // TODO propagate to other cells
+                    }
+                }
+                return game;
+            }
         }
         return null;
     }

@@ -35,13 +35,13 @@ public class CellIntegrationTest extends BaseTest {
         JavaType type = objectMapper.getTypeFactory().constructType(Game.class);
         Game game = objectMapper.readValue(content, type);
 
-        Cell response_cell = game.generateCellMap().get("1-2");
+        Cell response_cell = game.findCell(1,2).get();
         assertEquals(response_cell.getStatus(), MineStatus.Flagged);
 
-        response_cell = game.generateCellMap().get("2-1");
+        response_cell = game.findCell(2,1).get();
         assertNotEquals(response_cell.getStatus(), MineStatus.Flagged);
 
-        response_cell = game.generateCellMap().get("1-1");
+        response_cell = game.findCell(1,1).get();
         assertNotEquals(response_cell.getStatus(), MineStatus.Flagged);
     }
 
@@ -64,13 +64,13 @@ public class CellIntegrationTest extends BaseTest {
         JavaType type = objectMapper.getTypeFactory().constructType(Game.class);
         Game game = objectMapper.readValue(content, type);
 
-        Cell response_cell = game.generateCellMap().get("1-2");
+        Cell response_cell = game.findCell(1,2).get();
         assertEquals(response_cell.getStatus(), MineStatus.QuestionFlag);
 
-        response_cell = game.generateCellMap().get("2-1");
+        response_cell = game.findCell(2,1).get();
         assertNotEquals(response_cell.getStatus(), MineStatus.QuestionFlag);
 
-        response_cell = game.generateCellMap().get("1-1");
+        response_cell = game.findCell(1,1).get();
         assertNotEquals(response_cell.getStatus(), MineStatus.QuestionFlag);
     }
 
@@ -93,13 +93,13 @@ public class CellIntegrationTest extends BaseTest {
         JavaType type = objectMapper.getTypeFactory().constructType(Game.class);
         Game game = objectMapper.readValue(content, type);
 
-        Cell response_cell = game.generateCellMap().get("1-2");
+        Cell response_cell = game.findCell(1,2).get();
         assertEquals(response_cell.getStatus(), MineStatus.RedFlag);
 
-        response_cell = game.generateCellMap().get("2-1");
+        response_cell = game.findCell(2,1).get();
         assertNotEquals(response_cell.getStatus(), MineStatus.RedFlag);
 
-        response_cell = game.generateCellMap().get("1-1");
+        response_cell = game.findCell(1,1).get();
         assertNotEquals(response_cell.getStatus(), MineStatus.RedFlag);
     }
 

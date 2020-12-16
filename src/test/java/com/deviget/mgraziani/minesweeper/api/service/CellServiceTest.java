@@ -49,43 +49,43 @@ public class CellServiceTest {
     public void testFlagCell() throws Exception {
         mockGetGame();
         Game game = service.flagCell(2, 3);
-        Cell cell = game.generateCellMap().get("2-3");
+        Cell cell = game.findCell(2,3).get();
         assertEquals(MineStatus.Flagged, cell.getStatus());
     }
 
     @Test
     public void testFlagCellInverted() throws Exception {
         Game game = defaultGame();
-        Cell cell = game.generateCellMap().get("2-3");
+        Cell cell = game.findCell(2,3).get();
         cell.setStatus(MineStatus.Flagged);
         mockGetGame(game);
 
         game = service.flagCell(2, 3);
-        cell = game.generateCellMap().get("2-3");
+        cell = game.findCell(2,3).get();
         assertEquals(MineStatus.Hided, cell.getStatus());
     }
 
     @Test
     public void testFlagCellWithQuestion() throws Exception {
         Game game = defaultGame();
-        Cell cell = game.generateCellMap().get("2-3");
+        Cell cell = game.findCell(2,3).get();
         cell.setStatus(MineStatus.QuestionFlag);
         mockGetGame(game);
 
         game = service.flagCell(2, 3);
-        cell = game.generateCellMap().get("2-3");
+        cell = game.findCell(2,3).get();
         assertEquals(MineStatus.Flagged, cell.getStatus());
     }
 
     @Test
     public void testFlagCellWithRedFlag() throws Exception {
         Game game = defaultGame();
-        Cell cell = game.generateCellMap().get("2-3");
+        Cell cell = game.findCell(2,3).get();
         cell.setStatus(MineStatus.RedFlag);
         mockGetGame(game);
 
         game = service.flagCell(2, 3);
-        cell = game.generateCellMap().get("2-3");
+        cell = game.findCell(2,3).get();
         assertEquals(MineStatus.Flagged, cell.getStatus());
     }
 
@@ -93,43 +93,43 @@ public class CellServiceTest {
     public void testQuestionCell() throws Exception {
         mockGetGame();
         Game game = service.questionCell(2, 3);
-        Cell cell = game.generateCellMap().get("2-3");
+        Cell cell = game.findCell(2,3).get();
         assertEquals(MineStatus.QuestionFlag, cell.getStatus());
     }
 
     @Test
     public void testQuestionCellInverted() throws Exception {
         Game game = defaultGame();
-        Cell cell = game.generateCellMap().get("2-3");
+        Cell cell = game.findCell(2,3).get();
         cell.setStatus(MineStatus.QuestionFlag);
         mockGetGame(game);
 
         game = service.questionCell(2, 3);
-        cell = game.generateCellMap().get("2-3");
+        cell = game.findCell(2,3).get();
         assertEquals(MineStatus.Hided, cell.getStatus());
     }
 
     @Test
     public void testQuestionCellWithFlagged() throws Exception {
         Game game = defaultGame();
-        Cell cell = game.generateCellMap().get("2-3");
+        Cell cell = game.findCell(2,3).get();
         cell.setStatus(MineStatus.Flagged);
         mockGetGame(game);
 
         game = service.questionCell(2, 3);
-        cell = game.generateCellMap().get("2-3");
+        cell = game.findCell(2,3).get();
         assertEquals(MineStatus.QuestionFlag, cell.getStatus());
     }
 
     @Test
     public void testQuestionCellWithRedFlag() throws Exception {
         Game game = defaultGame();
-        Cell cell = game.generateCellMap().get("2-3");
+        Cell cell = game.findCell(2,3).get();
         cell.setStatus(MineStatus.RedFlag);
         mockGetGame(game);
 
         game = service.questionCell(2, 3);
-        cell = game.generateCellMap().get("2-3");
+        cell = game.findCell(2,3).get();
         assertEquals(MineStatus.QuestionFlag, cell.getStatus());
     }
 
@@ -137,43 +137,43 @@ public class CellServiceTest {
     public void testRedFlagCell() throws Exception {
         mockGetGame();
         Game game = service.redFlagCell(2, 3);
-        Cell cell = game.generateCellMap().get("2-3");
+        Cell cell = game.findCell(2,3).get();
         assertEquals(MineStatus.RedFlag, cell.getStatus());
     }
 
     @Test
     public void testRedFlagCellInverted() throws Exception {
         Game game = defaultGame();
-        Cell cell = game.generateCellMap().get("2-3");
+        Cell cell = game.findCell(2,3).get();
         cell.setStatus(MineStatus.RedFlag);
         mockGetGame(game);
 
         game = service.redFlagCell(2, 3);
-        cell = game.generateCellMap().get("2-3");
+        cell = game.findCell(2,3).get();
         assertEquals(MineStatus.Hided, cell.getStatus());
     }
 
     @Test
     public void testRedFlagCellWithFlagged() throws Exception {
         Game game = defaultGame();
-        Cell cell = game.generateCellMap().get("2-3");
+        Cell cell = game.findCell(2,3).get();
         cell.setStatus(MineStatus.Flagged);
         mockGetGame(game);
 
         game = service.redFlagCell(2, 3);
-        cell = game.generateCellMap().get("2-3");
+        cell = game.findCell(2,3).get();
         assertEquals(MineStatus.RedFlag, cell.getStatus());
     }
 
     @Test
     public void testRedFlagCellWithQuestion() throws Exception {
         Game game = defaultGame();
-        Cell cell = game.generateCellMap().get("2-3");
+        Cell cell = game.findCell(2,3).get();
         cell.setStatus(MineStatus.QuestionFlag);
         mockGetGame(game);
 
         game = service.redFlagCell(2, 3);
-        cell = game.generateCellMap().get("2-3");
+        cell = game.findCell(2,3).get();
         assertEquals(MineStatus.RedFlag, cell.getStatus());
     }
 }

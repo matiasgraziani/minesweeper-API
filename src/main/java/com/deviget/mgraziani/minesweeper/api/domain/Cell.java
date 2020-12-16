@@ -17,6 +17,9 @@ public class Cell {
 
     private MineStatus status;
 
+    @Column(name = "adjacent_mines")
+    private Integer adjacentMines = 0;
+
     public Long getId() {
         return id;
     }
@@ -57,4 +60,11 @@ public class Cell {
         this.status = status;
     }
 
+    public Integer getAdjacentMines() {
+        return adjacentMines;
+    }
+
+    public void setAdjacentMines(Integer adjacentMines) {
+        this.adjacentMines = adjacentMines;
+    }
 }
