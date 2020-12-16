@@ -14,7 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.Optional;
 
 import static com.deviget.mgraziani.minesweeper.api.service.GameService.*;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.BDDMockito.given;
 
 @RunWith(SpringRunner.class)
@@ -175,5 +175,20 @@ public class CellServiceTest {
         game = service.redFlagCell(2, 3);
         cell = game.findCell(2,3).get();
         assertEquals(MineStatus.RedFlag, cell.getStatus());
+    }
+
+    @Test
+    public void testClickCellValue() throws Exception {
+        Game game = defaultGame();
+        Cell cell = game.findCell(2,3).get();
+        cell.setMine(Boolean.TRUE);
+        cell = game.findCell(2,2).get();
+        cell.setMine(Boolean.FALSE);
+        mockGetGame(game);
+
+        game = service.clickCell(2,2);
+        cell = game.findCell(2,2).get();
+        assertEquals(MineStatus.Value, cell.getStatus());
+        assertNotEquals(0, cell.getAdjacentMines().intValue());
     }
 }
