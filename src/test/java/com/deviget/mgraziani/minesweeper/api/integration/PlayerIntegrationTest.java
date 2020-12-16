@@ -18,7 +18,7 @@ public class PlayerIntegrationTest extends BaseTest {
     /**
      * POST /player should create a new user with posted values
      */
-    public void testCreateUser() throws Exception {
+    public void testCreatePlayer() throws Exception {
         Player player = new Player();
         player.setName("Matias");
         ResultActions result = mockMvc.perform(post("/player")
@@ -33,7 +33,7 @@ public class PlayerIntegrationTest extends BaseTest {
     /**
      * POST /player should return Bad Request(400) if params are not send
      */
-    public void testCreateUserBadRequest() throws Exception {
+    public void testCreatePlayerBadRequest() throws Exception {
         mockMvc.perform(post("/player")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(null)))
@@ -44,13 +44,8 @@ public class PlayerIntegrationTest extends BaseTest {
     /**
      * GET /player/{id} should return a player
      */
-    public void testGetUser() throws Exception {
-        Player player = new Player();
-        player.setName("Matias");
-        ResultActions result = mockMvc.perform(post("/player")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(player)))
-                .andExpect(status().isCreated());
+    public void testGetPlayer() throws Exception {
+        createDefaultPlayer();
         ResultActions result2 = mockMvc.perform(get("/player/1")
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk());
@@ -62,7 +57,7 @@ public class PlayerIntegrationTest extends BaseTest {
     /**
      * GET /player/{id} should return not found (404) if user doesn't exist
      */
-    public void testGetUserFail() throws Exception {
+    public void testGetPlayerFail() throws Exception {
         mockMvc.perform(get("/player/32124")
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isNotFound());

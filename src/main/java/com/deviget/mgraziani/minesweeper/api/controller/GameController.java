@@ -33,34 +33,4 @@ public class GameController {
         }
     }
 
-    @PostMapping(value = "cell/flag",consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
-    public ResponseEntity<Game> flagCell(@RequestBody RequestCellDTO cell){
-        Game game = gameService.flagCell(cell.getHorizontal(), cell.getVertical());
-        if(game == null){
-            return new ResponseEntity<Game>(HttpStatus.NOT_FOUND);
-        }else{
-            return new ResponseEntity<Game>(game, HttpStatus.OK);
-        }
-    }
-
-    @PostMapping(value = "cell/question",consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
-    public ResponseEntity<Game> questionCell(@RequestBody RequestCellDTO cell){
-        Game game = gameService.questionCell(cell.getHorizontal(), cell.getVertical());
-        if(game == null){
-            return new ResponseEntity<Game>(HttpStatus.NOT_FOUND);
-        }else{
-            return new ResponseEntity<Game>(game, HttpStatus.OK);
-        }
-    }
-
-
-    @PostMapping(value = "cell/red-flag",consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
-    public ResponseEntity<Game> redFlagCell(@RequestBody RequestCellDTO cell){
-        Game game = gameService.redFlagCell(cell.getHorizontal(), cell.getVertical());
-        if(game == null){
-            return new ResponseEntity<Game>(HttpStatus.NOT_FOUND);
-        }else{
-            return new ResponseEntity<Game>(game, HttpStatus.OK);
-        }
-    }
 }

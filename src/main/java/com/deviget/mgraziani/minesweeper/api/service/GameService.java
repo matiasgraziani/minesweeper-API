@@ -44,41 +44,4 @@ public class GameService {
     public Optional<Game> get() {
         return gameRepository.findById(DEFAULT_PLAYER);
     }
-
-    @Transactional
-    public Game flagCell(Integer horizontal, Integer vertical) {
-        Optional<Game> gameOptional = this.get();
-        if(gameOptional.isPresent()){
-            Game game = gameOptional.get();
-            Cell cell = game.generateCellMap().get(horizontal + "-" + vertical);
-            cell.setStatus(MineStatus.Flagged);
-            return game;
-        }
-        return null;
-    }
-
-    @Transactional
-    public Game questionCell(Integer horizontal, Integer vertical) {
-        Optional<Game> gameOptional = this.get();
-        if(gameOptional.isPresent()){
-            Game game = gameOptional.get();
-            Cell cell = game.generateCellMap().get(horizontal + "-" + vertical);
-            cell.setStatus(MineStatus.QuestionFlag);
-            return game;
-        }
-        return null;
-    }
-
-    @Transactional
-    public Game redFlagCell(Integer horizontal, Integer vertical) {
-        Optional<Game> gameOptional = this.get();
-        if(gameOptional.isPresent()){
-            Game game = gameOptional.get();
-            Cell cell = game.generateCellMap().get(horizontal + "-" + vertical);
-            cell.setStatus(MineStatus.RedFlag);
-            return game;
-        }
-        return null;
-    }
-
 }
