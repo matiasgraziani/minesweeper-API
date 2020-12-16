@@ -48,4 +48,14 @@ public class CellController {
             return new ResponseEntity<Game>(game, HttpStatus.OK);
         }
     }
+
+    @PostMapping(value = "click",consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+    public ResponseEntity<Game> clickCell(@RequestBody RequestCellDTO cell){
+        Game game = cellService.clickCell(cell.getHorizontal(), cell.getVertical());
+        if(game == null){
+            return new ResponseEntity<Game>(HttpStatus.NOT_FOUND);
+        }else{
+            return new ResponseEntity<Game>(game, HttpStatus.OK);
+        }
+    }
 }
