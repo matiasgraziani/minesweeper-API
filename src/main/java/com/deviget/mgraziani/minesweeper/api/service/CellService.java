@@ -118,7 +118,8 @@ public class CellService {
                                     c.getHorizontal() <= cell.getHorizontal() + 1 &&
                                     c.getVertical() >= cell.getVertical() - 1 &&
                                     c.getVertical() <= cell.getVertical() + 1)
-                            .filter(c -> c.getId() != cell.getId())
+                            .filter(c -> !(c.getHorizontal().equals(cell.getHorizontal())&&
+                                        c.getVertical().equals(cell.getVertical())))
                             .filter(c -> c.getStatus().equals(MineStatus.Hided))
                             .collect(Collectors.toList());
                     cell.setStatus(MineStatus.Empty);

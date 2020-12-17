@@ -36,6 +36,23 @@ public class CellServiceTest {
         );
     }
 
+    private Game diagonalGame() throws Exception {
+        Game game = new Game(
+                new Player("Test"),
+                DEFAULT_HORIZONTAL_SIZE,
+                DEFAULT_VERTICAL_SIZE,
+                DEFAULT_MINES_NUM
+        );
+        for (Cell cell:game.getCells()) {
+            if(cell.getHorizontal().equals(cell.getVertical())){
+                cell.setMine(Boolean.TRUE);
+            }else{
+                cell.setMine(Boolean.FALSE);
+            }
+        }
+        return game;
+    }
+
     private Game mockGetGame(Game game){
         given(this.gameService.get()).willReturn(Optional.of(game));
         return game;
@@ -210,7 +227,34 @@ public class CellServiceTest {
     }
 
     @Test
-    public void testClickCellEmpty() throws Exception {
-        //TODO
+    public void testClickCellEmptyCell() throws Exception {
+        mockGetGame(diagonalGame());
+        Game game = service.clickCell(4,1);
+        assertEquals(DEFAULT_HORIZONTAL_SIZE*DEFAULT_VERTICAL_SIZE, game.getCells().size());
+        for (Cell cell:game.getCells()) {
+            if(cell.getHorizontal().equals(4) && cell.getVertical().equals(1)){
+                assertEquals(MineStatus.Empty, cell.getStatus());
+            }
+            else if(cell.getHorizontal().equals(3) && cell.getVertical().equals(1)){
+                assertEquals(MineStatus.Value, cell.getStatus());
+                assertEquals(1, cell.getAdjacentMines().intValue());
+            }
+            else if(cell.getHorizontal().equals(3) && cell.getVertical().equals(2)){
+                assertEquals(MineStatus.Value, cell.getStatus());
+                assertEquals(2, cell.getAdjacentMines().intValue());
+            }
+            else if(cell.getHorizontal().equals(4) && cell.getVertical().equals(2)){
+                assertEquals(MineStatus.Value, cell.getStatus());
+                assertEquals(1, cell.getAdjacentMines().intValue());
+            }
+            else if(cell.getHorizontal().equals(5) && cell.getVertical().equals(2)){
+                assertEquals(MineStatus.Empty, cell.getStatus());
+            }
+            else if(cell.getHorizontal().equals(5) && cell.getVertical().equals(1)){
+                assertEquals(MineStatus.Empty, cell.getStatus());
+            } else {
+                cell.getStatus().equals(MineStatus.Hided);
+            }
+        }
     }
 }
