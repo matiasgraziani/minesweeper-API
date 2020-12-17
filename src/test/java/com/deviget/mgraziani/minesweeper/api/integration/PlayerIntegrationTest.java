@@ -1,7 +1,7 @@
 package com.deviget.mgraziani.minesweeper.api.integration;
 
 import com.deviget.mgraziani.minesweeper.api.domain.Player;
-import com.deviget.mgraziani.minesweeper.api.util.BaseTest;
+import com.deviget.mgraziani.minesweeper.api.integration.util.BaseIntegrationTest;
 import org.junit.Test;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.http.MediaType;
@@ -12,7 +12,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class PlayerIntegrationTest extends BaseTest {
+public class PlayerIntegrationTest extends BaseIntegrationTest {
 
     @Test
     /**

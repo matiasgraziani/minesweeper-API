@@ -4,13 +4,12 @@ import com.deviget.mgraziani.minesweeper.api.domain.Cell;
 import com.deviget.mgraziani.minesweeper.api.domain.Game;
 import com.deviget.mgraziani.minesweeper.api.domain.MineStatus;
 import com.deviget.mgraziani.minesweeper.api.domain.Player;
-import com.deviget.mgraziani.minesweeper.api.dto.RequestCellDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
 import org.junit.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
-import com.deviget.mgraziani.minesweeper.api.util.BaseTest;
+import com.deviget.mgraziani.minesweeper.api.integration.util.BaseIntegrationTest;
 
 import java.util.Optional;
 
@@ -20,7 +19,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class GameIntegrationTest extends BaseTest {
+public class GameIntegrationTest extends BaseIntegrationTest {
 
     @Test
     /**
@@ -66,7 +65,7 @@ public class GameIntegrationTest extends BaseTest {
         assertEquals(DEFAULT_HORIZONTAL_SIZE, game.getHorizontalSize());
         assertEquals(DEFAULT_VERTICAL_SIZE, game.getVerticalSize());
         assertEquals(DEFAULT_MINES_NUM, game.getMines());
-        assertEquals(16, game.getCells().size());
+        assertEquals(DEFAULT_VERTICAL_SIZE*DEFAULT_HORIZONTAL_SIZE, game.getCells().size());
         // Cells
         for (Cell cell:game.getCells()) {
         }

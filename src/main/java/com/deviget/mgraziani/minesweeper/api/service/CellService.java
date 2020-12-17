@@ -7,9 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CellService {
@@ -71,25 +73,58 @@ public class CellService {
     @Transactional
     public Game clickCell(Integer horizontal, Integer vertical) {
         Optional<Game> gameOptional = gameService.get();
+        Game game = null;
         if(gameOptional.isPresent()){
-            Game game = gameOptional.get();
+            game = gameOptional.get();
             Optional<Cell> cellOptional = game.findCell(horizontal, vertical);
             if(cellOptional.isPresent() && CAN_BE_FLAGGED.contains(cellOptional.get().getStatus())){
                 Cell cell = cellOptional.get();
-                if(cell.getMine()){
-                    //FIXME GAME OVER
-                }else{
-                    int mineCount = game.getProximityMines(cell.getHorizontal(), cell.getVertical());
-                    if(mineCount != 0){
-                        cell.setStatus(MineStatus.Value);
-                        cell.setAdjacentMines(mineCount);
-                    }else{
-                        // TODO propagate to other cells
-                    }
+                internalCellClick(game, cell, Boolean.TRUE);
+            }
+            gameService.checkFinishGame(game);
+        }
+        return game;
+    }
+
+    private void internalCellClick(Game game, Cell cell, Boolean original){
+        //First check if we haven't select a mine
+        if(cell.getMine()){
+            // If not original call or flagged we end the game
+            if(original && !cell.getStatus().equals(MineStatus.Flagged)){
+                game.setEnd(LocalDateTime.now());
+                List<Cell> cellList = game.getCells().stream()
+                        .filter(c-> c.getStatus().equals(MineStatus.Hided))
+                        .collect(Collectors.toList());
+                cell.setStatus(MineStatus.Exploited);
+                cellList.forEach(cell1 -> internalCellClick(game, cell1, Boolean.FALSE));
+            }else{
+                //We flag the mines we check once the game is ended
+                if(game.getEnd() == null){
+                    cell.setStatus(MineStatus.Flagged);
                 }
-                return game;
+            }
+        }else{
+            // If not a mine we check if is Hided
+            if(cell.getStatus().equals(MineStatus.Hided)){
+                int mineCount = game.getProximityMines(cell.getHorizontal(), cell.getVertical());
+                // If has mines around we show how many
+                if(mineCount != 0){
+                    cell.setStatus(MineStatus.Value);
+                    cell.setAdjacentMines(mineCount);
+                }else{
+                    // If doesn't have mines around we check on the mines next to it in a recursive way
+                    List<Cell> cellList = game.getCells().stream().filter(c ->
+                            c.getHorizontal() >= cell.getHorizontal() - 1 &&
+                                    c.getHorizontal() <= cell.getHorizontal() + 1 &&
+                                    c.getVertical() >= cell.getVertical() - 1 &&
+                                    c.getVertical() <= cell.getVertical() + 1)
+                            .filter(c -> c.getId() != cell.getId())
+                            .filter(c -> c.getStatus().equals(MineStatus.Hided))
+                            .collect(Collectors.toList());
+                    cell.setStatus(MineStatus.Empty);
+                    cellList.forEach(cell1 -> internalCellClick(game, cell1, Boolean.FALSE));
+                }
             }
         }
-        return null;
     }
 }

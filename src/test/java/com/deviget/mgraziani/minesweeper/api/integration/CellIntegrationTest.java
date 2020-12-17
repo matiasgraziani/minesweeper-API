@@ -4,7 +4,7 @@ import com.deviget.mgraziani.minesweeper.api.domain.Cell;
 import com.deviget.mgraziani.minesweeper.api.domain.Game;
 import com.deviget.mgraziani.minesweeper.api.domain.MineStatus;
 import com.deviget.mgraziani.minesweeper.api.dto.RequestCellDTO;
-import com.deviget.mgraziani.minesweeper.api.util.BaseTest;
+import com.deviget.mgraziani.minesweeper.api.integration.util.BaseIntegrationTest;
 import com.fasterxml.jackson.databind.JavaType;
 import org.junit.Test;
 import org.springframework.http.MediaType;
@@ -15,7 +15,7 @@ import static org.junit.Assert.assertNotEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class CellIntegrationTest extends BaseTest {
+public class CellIntegrationTest extends BaseIntegrationTest {
     @Test
     /**
      * GET /cell/flag should return the game board with the cell flagged

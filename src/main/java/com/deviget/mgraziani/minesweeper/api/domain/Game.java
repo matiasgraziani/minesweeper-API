@@ -3,7 +3,10 @@ package com.deviget.mgraziani.minesweeper.api.domain;
 import com.deviget.mgraziani.minesweeper.api.exception.InvalidParamsException;
 
 import javax.persistence.*;
-import java.util.*;
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Entity
@@ -25,6 +28,7 @@ public class Game {
         this.mines = mines;
         Set<Integer> positions = getRandomMinePositions(horizontalSize, verticalSize, mines);
         this.createCells(positions);
+        this.start = LocalDateTime.now();
     }
 
     @Id
@@ -42,6 +46,10 @@ public class Game {
     private Integer horizontalSize;
 
     private Integer mines;
+
+    private LocalDateTime start;
+
+    private LocalDateTime end;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name="game_id")
@@ -139,5 +147,21 @@ public class Game {
 
     public void setCells(Set<Cell> cells) {
         this.cells = cells;
+    }
+
+    public LocalDateTime getStart() {
+        return start;
+    }
+
+    public void setStart(LocalDateTime start) {
+        this.start = start;
+    }
+
+    public LocalDateTime getEnd() {
+        return end;
+    }
+
+    public void setEnd(LocalDateTime end) {
+        this.end = end;
     }
 }

@@ -13,7 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Optional;
 
-import static com.deviget.mgraziani.minesweeper.api.service.GameService.*;
+import static com.deviget.mgraziani.minesweeper.api.TestDefaults.*;
 import static org.junit.Assert.*;
 import static org.mockito.BDDMockito.given;
 
@@ -190,5 +190,27 @@ public class CellServiceTest {
         cell = game.findCell(2,2).get();
         assertEquals(MineStatus.Value, cell.getStatus());
         assertNotEquals(0, cell.getAdjacentMines().intValue());
+    }
+
+    @Test
+    public void testClickCellMine() throws Exception {
+        Game game = defaultGame();
+        Cell cell = game.findCell(2,3).get();
+        cell.setMine(Boolean.FALSE);
+        cell = game.findCell(2,2).get();
+        cell.setMine(Boolean.TRUE);
+        mockGetGame(game);
+
+        game = service.clickCell(2,2);
+        cell = game.findCell(2,2).get();
+        assertEquals(MineStatus.Exploited, cell.getStatus());
+
+        //Check game has finish
+        assertNotNull(game.getEnd());
+    }
+
+    @Test
+    public void testClickCellEmpty() throws Exception {
+        //TODO
     }
 }

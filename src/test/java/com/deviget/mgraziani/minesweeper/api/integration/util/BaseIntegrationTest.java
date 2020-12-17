@@ -1,4 +1,4 @@
-package com.deviget.mgraziani.minesweeper.api.util;
+package com.deviget.mgraziani.minesweeper.api.integration.util;
 
 import com.deviget.mgraziani.minesweeper.api.MinesweeperApplication;
 import com.deviget.mgraziani.minesweeper.api.domain.Player;
@@ -25,9 +25,11 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 @WebAppConfiguration
 @ActiveProfiles("test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-public abstract class BaseTest {
+public abstract class BaseIntegrationTest {
     protected MockMvc mockMvc;
-    protected ObjectMapper objectMapper = new ObjectMapper();
+
+    @Autowired
+    protected ObjectMapper objectMapper;
 
     @Autowired
     private WebApplicationContext webApplicationContext;

@@ -52,6 +52,16 @@ databaseChangeLog:
                   type: int
                   constraints:
                     nullable: false
+              - column:
+                  name: start
+                  type: datetime
+                  constraints:
+                    nullable: true
+              - column:
+                  name: end
+                  type: datetime
+                  constraints:
+                    nullable: true
   - changeSet:
       id: 3
       author: mgraziani

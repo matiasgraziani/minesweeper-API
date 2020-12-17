@@ -6,9 +6,7 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.Map;
-
-import static com.deviget.mgraziani.minesweeper.api.service.GameService.*;
+import static com.deviget.mgraziani.minesweeper.api.TestDefaults.*;
 import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
@@ -28,8 +26,10 @@ public class GameTest {
         assertEquals(DEFAULT_HORIZONTAL_SIZE, game.getHorizontalSize());
         assertEquals(DEFAULT_VERTICAL_SIZE, game.getVerticalSize());
         assertEquals(DEFAULT_MINES_NUM, game.getMines());
+        assertNotNull(game.getStart());
+        assertNull(game.getEnd());
 
-        assertEquals(16, game.getCells().size());
+        assertEquals(DEFAULT_HORIZONTAL_SIZE*DEFAULT_VERTICAL_SIZE, game.getCells().size());
 
         Integer mines = 0;
         for (Cell cell:game.getCells()) {
