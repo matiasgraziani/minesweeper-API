@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
+import static com.deviget.mgraziani.minesweeper.api.TestDefaults.DEFAULT_PLAYER;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -26,6 +27,7 @@ public class CellIntegrationTest extends BaseIntegrationTest {
         RequestCellDTO cell = new RequestCellDTO();
         cell.setHorizontal(1);
         cell.setVertical(2);
+        cell.setUserId(DEFAULT_PLAYER);
         ResultActions result = mockMvc.perform(post("/cell/flag")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(cell)))
@@ -55,6 +57,7 @@ public class CellIntegrationTest extends BaseIntegrationTest {
         RequestCellDTO cell = new RequestCellDTO();
         cell.setHorizontal(1);
         cell.setVertical(2);
+        cell.setUserId(DEFAULT_PLAYER);
         ResultActions result = mockMvc.perform(post("/cell/question")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(cell)))
@@ -84,6 +87,7 @@ public class CellIntegrationTest extends BaseIntegrationTest {
         RequestCellDTO cell = new RequestCellDTO();
         cell.setHorizontal(1);
         cell.setVertical(2);
+        cell.setUserId(DEFAULT_PLAYER);
         ResultActions result = mockMvc.perform(post("/cell/red-flag")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(cell)))

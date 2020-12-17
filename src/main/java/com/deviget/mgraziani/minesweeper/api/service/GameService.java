@@ -14,7 +14,6 @@ import java.util.Optional;
 @Service
 public class GameService {
 
-    public static final Long DEFAULT_PLAYER = 1L;
     public static final Integer DEFAULT_MINES_NUM = 10;
     public static final Integer DEFAULT_HORIZONTAL_SIZE = 8;
     public static final Integer DEFAULT_VERTICAL_SIZE = 8;
@@ -25,8 +24,8 @@ public class GameService {
     @Autowired
     private PlayerRepository playerRepository;
 
-    public Game create() throws Exception {
-        Player player = playerRepository.findById(DEFAULT_PLAYER).get();
+    public Game create(Long userId) throws Exception {
+        Player player = playerRepository.findById(userId).get();
         Game game = new Game(
                 player,
                 DEFAULT_HORIZONTAL_SIZE,
@@ -37,8 +36,8 @@ public class GameService {
         return game;
     }
 
-    public Optional<Game> get() {
-        return gameRepository.findById(DEFAULT_PLAYER);
+    public Optional<Game> get(Long userId) {
+        return gameRepository.findById(userId);
     }
 
     public void checkFinishGame(Game game){

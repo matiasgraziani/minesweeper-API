@@ -21,7 +21,7 @@ public class CellController {
 
     @PostMapping(value = "flag",consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
     public ResponseEntity<Game> flagCell(@RequestBody RequestCellDTO cell){
-        Game game = cellService.flagCell(cell.getHorizontal(), cell.getVertical());
+        Game game = cellService.flagCell(cell.getUserId(), cell.getHorizontal(), cell.getVertical());
         if(game == null){
             return new ResponseEntity<Game>(HttpStatus.NOT_FOUND);
         }else{
@@ -31,7 +31,7 @@ public class CellController {
 
     @PostMapping(value = "question",consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
     public ResponseEntity<Game> questionCell(@RequestBody RequestCellDTO cell){
-        Game game = cellService.questionCell(cell.getHorizontal(), cell.getVertical());
+        Game game = cellService.questionCell(cell.getUserId(), cell.getHorizontal(), cell.getVertical());
         if(game == null){
             return new ResponseEntity<Game>(HttpStatus.NOT_FOUND);
         }else{
@@ -41,7 +41,7 @@ public class CellController {
 
     @PostMapping(value = "red-flag",consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
     public ResponseEntity<Game> redFlagCell(@RequestBody RequestCellDTO cell){
-        Game game = cellService.redFlagCell(cell.getHorizontal(), cell.getVertical());
+        Game game = cellService.redFlagCell(cell.getUserId(), cell.getHorizontal(), cell.getVertical());
         if(game == null){
             return new ResponseEntity<Game>(HttpStatus.NOT_FOUND);
         }else{
@@ -51,7 +51,7 @@ public class CellController {
 
     @PostMapping(value = "click",consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
     public ResponseEntity<Game> clickCell(@RequestBody RequestCellDTO cell){
-        Game game = cellService.clickCell(cell.getHorizontal(), cell.getVertical());
+        Game game = cellService.clickCell(cell.getUserId(), cell.getHorizontal(), cell.getVertical());
         if(game == null){
             return new ResponseEntity<Game>(HttpStatus.NOT_FOUND);
         }else{

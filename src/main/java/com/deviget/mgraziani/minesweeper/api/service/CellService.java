@@ -23,8 +23,8 @@ public class CellService {
             MineStatus.RedFlag, MineStatus.Flagged);
 
     @Transactional
-    public Game flagCell(Integer horizontal, Integer vertical) {
-        Optional<Game> gameOptional = gameService.get();
+    public Game flagCell(Long userId, Integer horizontal, Integer vertical) {
+        Optional<Game> gameOptional = gameService.get(userId);
         if(gameOptional.isPresent()){
             Game game = gameOptional.get();
             Optional<Cell> cell = game.findCell(horizontal, vertical);
@@ -37,8 +37,8 @@ public class CellService {
     }
 
     @Transactional
-    public Game questionCell(Integer horizontal, Integer vertical) {
-        Optional<Game> gameOptional = gameService.get();
+    public Game questionCell(Long userId, Integer horizontal, Integer vertical) {
+        Optional<Game> gameOptional = gameService.get(userId);
         if(gameOptional.isPresent()){
             Game game = gameOptional.get();
             Optional<Cell> cell = game.findCell(horizontal, vertical);
@@ -50,8 +50,8 @@ public class CellService {
     }
 
     @Transactional
-    public Game redFlagCell(Integer horizontal, Integer vertical) {
-        Optional<Game> gameOptional = gameService.get();
+    public Game redFlagCell(Long userId, Integer horizontal, Integer vertical) {
+        Optional<Game> gameOptional = gameService.get(userId);
         if(gameOptional.isPresent()){
             Game game = gameOptional.get();
             Optional<Cell> cell = game.findCell(horizontal, vertical);
@@ -71,8 +71,8 @@ public class CellService {
     }
 
     @Transactional
-    public Game clickCell(Integer horizontal, Integer vertical) {
-        Optional<Game> gameOptional = gameService.get();
+    public Game clickCell(Long userId, Integer horizontal, Integer vertical) {
+        Optional<Game> gameOptional = gameService.get(userId);
         Game game = null;
         if(gameOptional.isPresent()){
             game = gameOptional.get();

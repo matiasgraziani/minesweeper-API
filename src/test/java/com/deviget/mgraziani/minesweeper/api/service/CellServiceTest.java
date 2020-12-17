@@ -54,7 +54,7 @@ public class CellServiceTest {
     }
 
     private Game mockGetGame(Game game){
-        given(this.gameService.get()).willReturn(Optional.of(game));
+        given(this.gameService.get(DEFAULT_PLAYER)).willReturn(Optional.of(game));
         return game;
     }
 
@@ -65,7 +65,7 @@ public class CellServiceTest {
     @Test
     public void testFlagCell() throws Exception {
         mockGetGame();
-        Game game = service.flagCell(2, 3);
+        Game game = service.flagCell(DEFAULT_PLAYER, 2, 3);
         Cell cell = game.findCell(2,3).get();
         assertEquals(MineStatus.Flagged, cell.getStatus());
     }
@@ -77,7 +77,7 @@ public class CellServiceTest {
         cell.setStatus(MineStatus.Flagged);
         mockGetGame(game);
 
-        game = service.flagCell(2, 3);
+        game = service.flagCell(DEFAULT_PLAYER, 2, 3);
         cell = game.findCell(2,3).get();
         assertEquals(MineStatus.Hided, cell.getStatus());
     }
@@ -89,7 +89,7 @@ public class CellServiceTest {
         cell.setStatus(MineStatus.QuestionFlag);
         mockGetGame(game);
 
-        game = service.flagCell(2, 3);
+        game = service.flagCell(DEFAULT_PLAYER, 2, 3);
         cell = game.findCell(2,3).get();
         assertEquals(MineStatus.Flagged, cell.getStatus());
     }
@@ -101,7 +101,7 @@ public class CellServiceTest {
         cell.setStatus(MineStatus.RedFlag);
         mockGetGame(game);
 
-        game = service.flagCell(2, 3);
+        game = service.flagCell(DEFAULT_PLAYER, 2, 3);
         cell = game.findCell(2,3).get();
         assertEquals(MineStatus.Flagged, cell.getStatus());
     }
@@ -109,7 +109,7 @@ public class CellServiceTest {
     @Test
     public void testQuestionCell() throws Exception {
         mockGetGame();
-        Game game = service.questionCell(2, 3);
+        Game game = service.questionCell(DEFAULT_PLAYER, 2, 3);
         Cell cell = game.findCell(2,3).get();
         assertEquals(MineStatus.QuestionFlag, cell.getStatus());
     }
@@ -121,7 +121,7 @@ public class CellServiceTest {
         cell.setStatus(MineStatus.QuestionFlag);
         mockGetGame(game);
 
-        game = service.questionCell(2, 3);
+        game = service.questionCell(DEFAULT_PLAYER, 2, 3);
         cell = game.findCell(2,3).get();
         assertEquals(MineStatus.Hided, cell.getStatus());
     }
@@ -133,7 +133,7 @@ public class CellServiceTest {
         cell.setStatus(MineStatus.Flagged);
         mockGetGame(game);
 
-        game = service.questionCell(2, 3);
+        game = service.questionCell(DEFAULT_PLAYER, 2, 3);
         cell = game.findCell(2,3).get();
         assertEquals(MineStatus.QuestionFlag, cell.getStatus());
     }
@@ -145,7 +145,7 @@ public class CellServiceTest {
         cell.setStatus(MineStatus.RedFlag);
         mockGetGame(game);
 
-        game = service.questionCell(2, 3);
+        game = service.questionCell(DEFAULT_PLAYER, 2, 3);
         cell = game.findCell(2,3).get();
         assertEquals(MineStatus.QuestionFlag, cell.getStatus());
     }
@@ -153,7 +153,7 @@ public class CellServiceTest {
     @Test
     public void testRedFlagCell() throws Exception {
         mockGetGame();
-        Game game = service.redFlagCell(2, 3);
+        Game game = service.redFlagCell(DEFAULT_PLAYER, 2, 3);
         Cell cell = game.findCell(2,3).get();
         assertEquals(MineStatus.RedFlag, cell.getStatus());
     }
@@ -165,7 +165,7 @@ public class CellServiceTest {
         cell.setStatus(MineStatus.RedFlag);
         mockGetGame(game);
 
-        game = service.redFlagCell(2, 3);
+        game = service.redFlagCell(DEFAULT_PLAYER, 2, 3);
         cell = game.findCell(2,3).get();
         assertEquals(MineStatus.Hided, cell.getStatus());
     }
@@ -177,7 +177,7 @@ public class CellServiceTest {
         cell.setStatus(MineStatus.Flagged);
         mockGetGame(game);
 
-        game = service.redFlagCell(2, 3);
+        game = service.redFlagCell(DEFAULT_PLAYER, 2, 3);
         cell = game.findCell(2,3).get();
         assertEquals(MineStatus.RedFlag, cell.getStatus());
     }
@@ -189,7 +189,7 @@ public class CellServiceTest {
         cell.setStatus(MineStatus.QuestionFlag);
         mockGetGame(game);
 
-        game = service.redFlagCell(2, 3);
+        game = service.redFlagCell(DEFAULT_PLAYER, 2, 3);
         cell = game.findCell(2,3).get();
         assertEquals(MineStatus.RedFlag, cell.getStatus());
     }
@@ -203,7 +203,7 @@ public class CellServiceTest {
         cell.setMine(Boolean.FALSE);
         mockGetGame(game);
 
-        game = service.clickCell(2,2);
+        game = service.clickCell(DEFAULT_PLAYER, 2,2);
         cell = game.findCell(2,2).get();
         assertEquals(MineStatus.Value, cell.getStatus());
         assertNotEquals(0, cell.getAdjacentMines().intValue());
@@ -218,7 +218,7 @@ public class CellServiceTest {
         cell.setMine(Boolean.TRUE);
         mockGetGame(game);
 
-        game = service.clickCell(2,2);
+        game = service.clickCell(DEFAULT_PLAYER, 2,2);
         cell = game.findCell(2,2).get();
         assertEquals(MineStatus.Exploited, cell.getStatus());
 
@@ -229,7 +229,7 @@ public class CellServiceTest {
     @Test
     public void testClickCellEmptyCell() throws Exception {
         mockGetGame(diagonalGame());
-        Game game = service.clickCell(4,1);
+        Game game = service.clickCell(DEFAULT_PLAYER, 4,1);
         assertEquals(DEFAULT_HORIZONTAL_SIZE*DEFAULT_VERTICAL_SIZE, game.getCells().size());
         for (Cell cell:game.getCells()) {
             if(cell.getHorizontal().equals(4) && cell.getVertical().equals(1)){

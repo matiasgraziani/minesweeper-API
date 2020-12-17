@@ -5,10 +5,7 @@ import com.deviget.mgraziani.minesweeper.api.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -19,14 +16,14 @@ public class GameController {
     @Autowired
     private GameService gameService;
 
-    @PutMapping(produces = "application/json")
-    public ResponseEntity<Game> create() throws Exception {
-        return new ResponseEntity<Game>(gameService.create(), HttpStatus.CREATED);
+    @PutMapping(value="/{userId}", produces = "application/json")
+    public ResponseEntity<Game> create(@PathVariable("userId") Long userId) throws Exception {
+        return new ResponseEntity<Game>(gameService.create(userId), HttpStatus.CREATED);
     }
 
-    @GetMapping(produces = "application/json")
-    public ResponseEntity<Game> get(){
-        Optional<Game> gameOptional = gameService.get();
+    @GetMapping(value="/{userId}", produces = "application/json")
+    public ResponseEntity<Game> get(@PathVariable("userId") Long userId){
+        Optional<Game> gameOptional = gameService.get(userId);
         if (gameOptional.isPresent()) {
             return new ResponseEntity<Game>(gameOptional.get(), HttpStatus.OK);
         }else{

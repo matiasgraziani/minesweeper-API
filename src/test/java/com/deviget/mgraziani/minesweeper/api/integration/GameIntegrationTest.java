@@ -13,6 +13,7 @@ import com.deviget.mgraziani.minesweeper.api.integration.util.BaseIntegrationTes
 
 import java.util.Optional;
 
+import static com.deviget.mgraziani.minesweeper.api.TestDefaults.DEFAULT_PLAYER;
 import static com.deviget.mgraziani.minesweeper.api.service.GameService.*;
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertNotNull;
@@ -27,7 +28,7 @@ public class GameIntegrationTest extends BaseIntegrationTest {
      */
     public void testCreate() throws Exception {
         createDefaultPlayer();
-        ResultActions result = mockMvc.perform(put("/game")
+        ResultActions result = mockMvc.perform(put("/game/"+DEFAULT_PLAYER)
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isCreated());
         String content = result.andReturn().getResponse().getContentAsString();
@@ -40,11 +41,11 @@ public class GameIntegrationTest extends BaseIntegrationTest {
      */
     public void testGetGame() throws Exception {
         createDefaultPlayer();
-        mockMvc.perform(put("/game")
+        mockMvc.perform(put("/game/"+DEFAULT_PLAYER)
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isCreated());
 
-        ResultActions result = mockMvc.perform(get("/game")
+        ResultActions result = mockMvc.perform(get("/game/"+DEFAULT_PLAYER)
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk());
         String content = result.andReturn().getResponse().getContentAsString();

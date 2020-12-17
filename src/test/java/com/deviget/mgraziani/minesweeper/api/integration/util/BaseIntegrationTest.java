@@ -15,6 +15,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
+import static com.deviget.mgraziani.minesweeper.api.TestDefaults.DEFAULT_PLAYER;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -49,7 +50,7 @@ public abstract class BaseIntegrationTest {
     }
 
     protected void createDefaultGame() throws Exception {
-        mockMvc.perform(put("/game")
+        mockMvc.perform(put("/game/"+DEFAULT_PLAYER)
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isCreated());
     }
