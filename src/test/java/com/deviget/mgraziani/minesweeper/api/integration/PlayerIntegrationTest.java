@@ -3,13 +3,12 @@ package com.deviget.mgraziani.minesweeper.api.integration;
 import com.deviget.mgraziani.minesweeper.api.domain.Player;
 import com.deviget.mgraziani.minesweeper.api.integration.util.BaseIntegrationTest;
 import org.junit.Test;
-import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.ResultActions;
 
 import static org.junit.Assert.assertEquals;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class PlayerIntegrationTest extends BaseIntegrationTest {

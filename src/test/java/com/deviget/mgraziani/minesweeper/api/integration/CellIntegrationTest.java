@@ -17,7 +17,6 @@ import java.util.Optional;
 import static com.deviget.mgraziani.minesweeper.api.TestDefaults.DEFAULT_PLAYER;
 import static com.deviget.mgraziani.minesweeper.api.service.GameService.*;
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 

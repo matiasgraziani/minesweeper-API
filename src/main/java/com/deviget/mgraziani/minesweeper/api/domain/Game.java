@@ -12,11 +12,14 @@ import java.util.concurrent.ThreadLocalRandom;
 @Entity
 public class Game {
 
+    public static Integer MAX_SIZE = 20;
+
     public Game(){}
 
     public Game(Player player, Integer horizontalSize, Integer verticalSize, Integer mines) throws Exception{
         if(player == null||horizontalSize == null||horizontalSize < 1||
-                verticalSize == null||verticalSize < 1
+                verticalSize == null||verticalSize < 1||mines == null||mines < 1||
+                mines > horizontalSize*verticalSize || horizontalSize > MAX_SIZE || verticalSize > 20
         ){
             throw new InvalidParamsException("Not valid parameters");
         }

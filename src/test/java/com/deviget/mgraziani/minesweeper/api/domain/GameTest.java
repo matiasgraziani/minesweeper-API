@@ -52,6 +52,21 @@ public class GameTest {
 
     @Test
     /**
+     * When creating a game with params as null should throw an InvalidParamsException
+     */
+    public void testCreateGameInvalidParams() {
+        assertThrows(InvalidParamsException.class, ()-> {
+            Game game = new Game(
+                    new Player("Test"),
+                    100,
+                    100,
+                    20
+            );
+        });
+    }
+
+    @Test
+    /**
      * getProximityMines should return the number of mines around the cell
      */
     public void testGetProximityMines() throws Exception {

@@ -4,13 +4,14 @@ import com.deviget.mgraziani.minesweeper.api.domain.Game;
 import com.deviget.mgraziani.minesweeper.api.domain.MineStatus;
 import com.deviget.mgraziani.minesweeper.api.domain.Player;
 import com.deviget.mgraziani.minesweeper.api.repository.GameRepository;
-import com.deviget.mgraziani.minesweeper.api.repository.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class GameService {
@@ -23,13 +24,17 @@ public class GameService {
     private GameRepository gameRepository;
 
     @Autowired
-    private PlayerRepository playerRepository;
+    private PlayerService playerService;
 
     public Game create(Long userId) throws Exception {
-        Player player = playerRepository.findById(userId).get();
+        return create(userId, DEFAULT_HORIZONTAL_SIZE, DEFAULT_VERTICAL_SIZE, DEFAULT_MINES_NUM);
+    }
+
+    public Game create(Long userId, Integer horizontalSize, Integer verticalSize, Integer mines) throws Exception {
+        Player player = playerService.findById(userId).get();
 
         //First I disable any previous game
-        Optional<Game> gameOptional = this.get(player);
+        Optional<Game> gameOptional = this.getCurrent(player);
         if(gameOptional.isPresent()){
             Game game = gameOptional.get();
             game.setActive(Boolean.FALSE);
@@ -38,21 +43,29 @@ public class GameService {
 
         Game game = new Game(
                 player,
-                DEFAULT_HORIZONTAL_SIZE,
-                DEFAULT_VERTICAL_SIZE,
-                DEFAULT_MINES_NUM
+                horizontalSize,
+                verticalSize,
+                mines
         );
         gameRepository.save(game);
         return game;
     }
 
-
-    public Optional<Game> get(Long playerId) {
-        Player player = playerRepository.findById(playerId).get();
-        return this.get(player);
+    public Set<Game> list(Long playerId) {
+        Player player = playerService.findById(playerId).get();
+        return this.list(player);
     }
 
-    public Optional<Game> get(Player player) {
+    public Set<Game> list(Player player) {
+        return gameRepository.findAllByPlayer(player);
+    }
+
+    public Optional<Game> getCurrent(Long playerId) {
+        Player player = playerService.findById(playerId).get();
+        return this.getCurrent(player);
+    }
+
+    public Optional<Game> getCurrent(Player player) {
         return gameRepository.findByPlayerAndActiveTrue(player);
     }
 
@@ -78,7 +91,23 @@ public class GameService {
         game.setActive(Boolean.FALSE);
     }
 
-    public List<Game> list() {
+    public List<Game> listAllGames() {
         return gameRepository.findAll();
+    }
+
+    @Transactional
+    public Game switchGame(Long userId, Long gameId) {
+        Set<Game> games = list(userId);
+        games.forEach(game -> game.setActive(Boolean.FALSE));
+        Optional<Game> gameOptional = games.stream()
+                .filter(game -> game.getId().equals(gameId))
+                .filter(game -> game.getEnd() == null)
+                .findFirst();
+        Game game = null;
+        if(gameOptional.isPresent()){
+            game = gameOptional.get();
+            game.setActive(Boolean.TRUE);
+        }
+        return game;
     }
 }

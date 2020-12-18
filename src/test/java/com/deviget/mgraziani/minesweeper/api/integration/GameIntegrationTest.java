@@ -1,23 +1,20 @@
 package com.deviget.mgraziani.minesweeper.api.integration;
 
-import com.deviget.mgraziani.minesweeper.api.domain.Cell;
 import com.deviget.mgraziani.minesweeper.api.domain.Game;
-import com.deviget.mgraziani.minesweeper.api.domain.MineStatus;
 import com.deviget.mgraziani.minesweeper.api.domain.Player;
+import com.deviget.mgraziani.minesweeper.api.dto.InitialGameDTO;
+import com.deviget.mgraziani.minesweeper.api.integration.util.BaseIntegrationTest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
 import org.junit.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
-import com.deviget.mgraziani.minesweeper.api.integration.util.BaseIntegrationTest;
 
 import java.util.List;
-import java.util.Optional;
 
 import static com.deviget.mgraziani.minesweeper.api.TestDefaults.DEFAULT_PLAYER;
 import static com.deviget.mgraziani.minesweeper.api.service.GameService.*;
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -25,7 +22,7 @@ public class GameIntegrationTest extends BaseIntegrationTest {
 
     @Test
     /**
-     * POST /game should create a new user game with default values
+     * PUT /game should create a new user game with default values
      */
     public void testCreate() throws Exception {
         createDefaultPlayer();
@@ -38,7 +35,26 @@ public class GameIntegrationTest extends BaseIntegrationTest {
 
     @Test
     /**
-     * POST /game should create a new user game with default values and invalidate previous ones
+     * POST /game should create a new user game with current values
+     */
+    public void testCreateCustom() throws Exception {
+        createDefaultPlayer();
+        InitialGameDTO dto = new InitialGameDTO();
+        dto.setHorizontalSize(20);
+        dto.setVerticalSize(15);
+        dto.setMines(10);
+        ResultActions result = mockMvc.perform(post("/game/"+DEFAULT_PLAYER)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isCreated());
+        String content = result.andReturn().getResponse().getContentAsString();
+        checkDefaultGame(content, "Player 1",
+                20, 15, 10);
+    }
+
+    @Test
+    /**
+     * PUT /game should create a new user game with default values and invalidate previous ones
      */
     public void testCreateMultipleTimes() throws Exception {
         createDefaultPlayer();
@@ -73,7 +89,59 @@ public class GameIntegrationTest extends BaseIntegrationTest {
 
     @Test
     /**
-     * POST /game should create a new user game with default values and invalidate previous ones
+     * PUT /game should create a new user game with default values and invalidate previous ones
+     */
+    public void testSwitchGame() throws Exception {
+        createDefaultPlayer();
+        ResultActions result = mockMvc.perform(put("/game/" + DEFAULT_PLAYER)
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isCreated());
+        String content = result.andReturn().getResponse().getContentAsString();
+        checkDefaultGame(content);
+
+        result = mockMvc.perform(put("/game/" + DEFAULT_PLAYER)
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isCreated());
+        content = result.andReturn().getResponse().getContentAsString();
+        checkDefaultGame(content);
+
+        result = mockMvc.perform(get("/game")
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk());
+        content = result.andReturn().getResponse().getContentAsString();
+
+        //Check is everything correct
+        JavaType type = objectMapper.getTypeFactory().constructCollectionType(List.class, Game.class);
+        List<Game> arrayOfGame = objectMapper.readValue(content, type);
+        assertEquals(2, arrayOfGame.size());
+        assertEquals(1, arrayOfGame.stream().filter(game -> game.getActive()).count());
+
+        assertEquals(2L ,arrayOfGame.stream().filter(game -> game.getActive()).findFirst().get().getId().longValue());
+
+        //Switch the active Game
+        result = mockMvc.perform(put("/game/switch/"+ DEFAULT_PLAYER +"/"+ 1)
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk());
+
+        content = result.andReturn().getResponse().getContentAsString();
+        checkDefaultGame(content);
+
+        result = mockMvc.perform(get("/game")
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk());
+        content = result.andReturn().getResponse().getContentAsString();
+
+        //Check is everything correct but game is ID: 1
+        type = objectMapper.getTypeFactory().constructCollectionType(List.class, Game.class);
+        arrayOfGame = objectMapper.readValue(content, type);
+        assertEquals(2, arrayOfGame.size());
+        assertEquals(1, arrayOfGame.stream().filter(game -> game.getActive()).count());
+
+        assertEquals(1L ,arrayOfGame.stream().filter(game -> game.getActive()).findFirst().get().getId().longValue());
+    }
+        @Test
+    /**
+     * PUT /game should create a new user game with default values and invalidate previous ones
      */
     public void testCreateMultipleGameWithDifferentPlayers() throws Exception {
         //Player 1
@@ -90,7 +158,8 @@ public class GameIntegrationTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isCreated());
         content = result.andReturn().getResponse().getContentAsString();
-        checkDefaultGame(content, "Player 2");
+        checkDefaultGame(content, "Player 2",
+                DEFAULT_HORIZONTAL_SIZE, DEFAULT_VERTICAL_SIZE, DEFAULT_MINES_NUM);
 
         result = mockMvc.perform(get("/game")
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -134,26 +203,56 @@ public class GameIntegrationTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk());
         String content = result.andReturn().getResponse().getContentAsString();
-        checkDefaultGame(content);
+        JavaType type = objectMapper.getTypeFactory().constructCollectionType(List.class, Game.class);
+        List<Game> arrayOfGame = objectMapper.readValue(content, type);
+        assertEquals(1, arrayOfGame.size());
+        checkDefaultGame(
+                arrayOfGame.get(0),
+                "Player 1",
+                DEFAULT_HORIZONTAL_SIZE,
+                DEFAULT_VERTICAL_SIZE,
+                DEFAULT_MINES_NUM
+        );
     }
 
     private void checkDefaultGame(String content) throws JsonProcessingException {
-        checkDefaultGame(content, "Player 1");
+        checkDefaultGame(
+                content,
+                "Player 1",
+                DEFAULT_HORIZONTAL_SIZE,
+                DEFAULT_VERTICAL_SIZE,
+                DEFAULT_MINES_NUM
+        );
     }
 
-    private void checkDefaultGame(String content, String playerName) throws JsonProcessingException {
+    private void checkDefaultGame(
+            String content, String playerName, Integer horizontalSize,
+            Integer verticalSize, Integer mines
+    ) throws JsonProcessingException {
         JavaType type = objectMapper.getTypeFactory().constructType(Game.class);
         Game game = objectMapper.readValue(content, type);
+        checkDefaultGame(
+                game,
+                playerName,
+                horizontalSize,
+                verticalSize,
+                mines
+        );
+    }
 
+    private void checkDefaultGame(
+            Game game, String playerName, Integer horizontalSize,
+            Integer verticalSize, Integer mines
+    ) {
         assertNotNull(game);
         // Player
         Player player = game.getPlayer();
         assertNotNull(player);
         assertEquals(playerName, player.getName());
         // Game
-        assertEquals(DEFAULT_HORIZONTAL_SIZE, game.getHorizontalSize());
-        assertEquals(DEFAULT_VERTICAL_SIZE, game.getVerticalSize());
-        assertEquals(DEFAULT_MINES_NUM, game.getMines());
+        assertEquals(horizontalSize, game.getHorizontalSize());
+        assertEquals(verticalSize, game.getVerticalSize());
+        assertEquals(mines, game.getMines());
         assertEquals(0, game.getCells().size());
         assertNull(game.getStart());
         assertNull(game.getEnd());

@@ -38,7 +38,7 @@ public class CellService {
     }
 
     private Game innerCellCall(Long userId, Integer horizontal, Integer vertical, MineStatus mineStatus){
-        Optional<Game> gameOptional = gameService.get(userId);
+        Optional<Game> gameOptional = gameService.getCurrent(userId);
         if(gameOptional.isPresent()){
             Game game = gameOptional.get();
             if(game.getStart() == null){
@@ -63,7 +63,7 @@ public class CellService {
 
     @Transactional
     public Game clickCell(Long userId, Integer horizontal, Integer vertical) {
-        Optional<Game> gameOptional = gameService.get(userId);
+        Optional<Game> gameOptional = gameService.getCurrent(userId);
         Game game = null;
         if(gameOptional.isPresent()){
             game = gameOptional.get();

@@ -57,7 +57,7 @@ public class CellServiceTest {
     }
 
     private Game mockGetGame(Game game){
-        given(this.gameService.get(DEFAULT_PLAYER)).willReturn(Optional.of(game));
+        given(this.gameService.getCurrent(DEFAULT_PLAYER)).willReturn(Optional.of(game));
         return game;
     }
 
