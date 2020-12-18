@@ -141,7 +141,6 @@ public class GameIntegrationTest extends BaseIntegrationTest {
         checkDefaultGame(content, "Player 1");
     }
 
-
     private void checkDefaultGame(String content, String playerName) throws JsonProcessingException {
         JavaType type = objectMapper.getTypeFactory().constructType(Game.class);
         Game game = objectMapper.readValue(content, type);
@@ -155,25 +154,8 @@ public class GameIntegrationTest extends BaseIntegrationTest {
         assertEquals(DEFAULT_HORIZONTAL_SIZE, game.getHorizontalSize());
         assertEquals(DEFAULT_VERTICAL_SIZE, game.getVerticalSize());
         assertEquals(DEFAULT_MINES_NUM, game.getMines());
-        assertEquals(DEFAULT_VERTICAL_SIZE*DEFAULT_HORIZONTAL_SIZE, game.getCells().size());
-        // Cells
-        int count = 0;
-        for (int h = 1; h <= DEFAULT_HORIZONTAL_SIZE; h++) {
-            for (int v = 1; v <= DEFAULT_VERTICAL_SIZE; v++) {
-                int finalV = v;
-                int finalH = h;
-                Optional<Cell> cellOptional = game.getCells().stream()
-                        .filter(c ->
-                                c.getVertical() == finalV && c.getHorizontal() == finalH)
-                        .findFirst();
-                assertTrue(cellOptional.isPresent());
-                Cell cell = cellOptional.get();
-                assertEquals(MineStatus.Hided, cell.getStatus());
-                if(cell.getMine()){
-                    count++;
-                }
-            }
-        }
-        assertEquals(count, game.getMines().intValue());
+        assertEquals(0, game.getCells().size());
+        assertNull(game.getStart());
+        assertNull(game.getEnd());
     }
 }

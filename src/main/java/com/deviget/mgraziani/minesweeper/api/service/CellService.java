@@ -24,43 +24,34 @@ public class CellService {
 
     @Transactional
     public Game flagCell(Long userId, Integer horizontal, Integer vertical) {
-        Optional<Game> gameOptional = gameService.get(userId);
-        if(gameOptional.isPresent()){
-            Game game = gameOptional.get();
-            Optional<Cell> cell = game.findCell(horizontal, vertical);
-            if(cell.isPresent()){
-                this.changeCellStatus(cell.get(), MineStatus.Flagged);
-            }
-            return game;
-        }
-        return null;
+        return innerCellCall(userId, horizontal, vertical, MineStatus.Flagged);
     }
 
     @Transactional
     public Game questionCell(Long userId, Integer horizontal, Integer vertical) {
+        return innerCellCall(userId, horizontal, vertical, MineStatus.QuestionFlag);
+    }
+
+    @Transactional
+    public Game redFlagCell(Long userId, Integer horizontal, Integer vertical) {
+        return innerCellCall(userId, horizontal, vertical, MineStatus.RedFlag);
+    }
+
+    private Game innerCellCall(Long userId, Integer horizontal, Integer vertical, MineStatus mineStatus){
         Optional<Game> gameOptional = gameService.get(userId);
         if(gameOptional.isPresent()){
             Game game = gameOptional.get();
+            if(game.getStart() == null){
+                game.start(horizontal, vertical);
+            }
             Optional<Cell> cell = game.findCell(horizontal, vertical);
             if(cell.isPresent())
-                this.changeCellStatus(cell.get(), MineStatus.QuestionFlag);
+                this.changeCellStatus(cell.get(), mineStatus);
             return game;
         }
         return null;
     }
 
-    @Transactional
-    public Game redFlagCell(Long userId, Integer horizontal, Integer vertical) {
-        Optional<Game> gameOptional = gameService.get(userId);
-        if(gameOptional.isPresent()){
-            Game game = gameOptional.get();
-            Optional<Cell> cell = game.findCell(horizontal, vertical);
-            if(cell.isPresent())
-                this.changeCellStatus(cell.get(), MineStatus.RedFlag);
-            return game;
-        }
-        return null;
-    }
 
     private void changeCellStatus(Cell cell, MineStatus mineStatus){
         if(CAN_BE_FLAGGED.contains(cell.getStatus()) && !cell.getStatus().equals(mineStatus)){
@@ -76,6 +67,9 @@ public class CellService {
         Game game = null;
         if(gameOptional.isPresent()){
             game = gameOptional.get();
+            if(game.getStart() == null){
+                game.start(horizontal, vertical);
+            }
             Optional<Cell> cellOptional = game.findCell(horizontal, vertical);
             if(cellOptional.isPresent() && CAN_BE_FLAGGED.contains(cellOptional.get().getStatus())){
                 Cell cell = cellOptional.get();

@@ -16,8 +16,7 @@ public class Game {
 
     public Game(Player player, Integer horizontalSize, Integer verticalSize, Integer mines) throws Exception{
         if(player == null||horizontalSize == null||horizontalSize < 1||
-                verticalSize == null||verticalSize < 1||mines == null||mines < 1||
-                mines > horizontalSize*verticalSize
+                verticalSize == null||verticalSize < 1
         ){
             throw new InvalidParamsException("Not valid parameters");
         }
@@ -26,9 +25,6 @@ public class Game {
         this.horizontalSize = horizontalSize;
         this.verticalSize = verticalSize;
         this.mines = mines;
-        Set<Integer> positions = getRandomMinePositions(horizontalSize, verticalSize, mines);
-        this.createCells(positions);
-        this.start = LocalDateTime.now();
     }
 
     @Id
@@ -75,11 +71,15 @@ public class Game {
         return (int)mineCount;
     }
 
-    private Set<Integer> getRandomMinePositions(Integer horizontalSize, Integer verticalSize, Integer mines){
+    private Set<Integer> getRandomMinePositions(Integer horizontalSize, Integer verticalSize,
+                                                Integer mines, Integer ignorePosition){
         Set<Integer> positions = new HashSet<>();
         Integer max = verticalSize * horizontalSize;
         while(positions.size() < mines) {
-            positions.add(ThreadLocalRandom.current().nextInt(1, max+1));
+            Integer position = ThreadLocalRandom.current().nextInt(1, max+1);
+            if(!position.equals(ignorePosition)){
+                positions.add(position);
+            }
         }
         return positions;
     }
@@ -101,6 +101,21 @@ public class Game {
                 this.getCells().add(cell);
             }
         }
+    }
+
+    public void start(Integer horizontal, Integer vertical){
+        if(this.start == null){
+            Integer originalPosition = getCurrentPosition(horizontal, vertical);
+            Set<Integer> positions = getRandomMinePositions(this.horizontalSize, this.verticalSize, mines, originalPosition);
+            this.createCells(positions);
+            this.start = LocalDateTime.now();
+        }
+    }
+
+    public Integer getCurrentPosition(Integer horizontal, Integer vertical){
+        Integer fullColumn = (horizontal - 1) * this.verticalSize;
+        Integer partialColumn = vertical;
+        return fullColumn + partialColumn;
     }
 
     public Long getId() {

@@ -28,12 +28,14 @@ public class CellServiceTest {
     private CellService service;
 
     private Game defaultGame() throws Exception {
-        return new Game(
+        Game game = new Game(
                 new Player("Test"),
                 DEFAULT_HORIZONTAL_SIZE,
                 DEFAULT_VERTICAL_SIZE,
                 DEFAULT_MINES_NUM
         );
+        game.start(0,0);
+        return game;
     }
 
     private Game diagonalGame() throws Exception {
@@ -43,6 +45,7 @@ public class CellServiceTest {
                 DEFAULT_VERTICAL_SIZE,
                 DEFAULT_MINES_NUM
         );
+        game.start(0,0);
         for (Cell cell:game.getCells()) {
             if(cell.getHorizontal().equals(cell.getVertical())){
                 cell.setMine(Boolean.TRUE);

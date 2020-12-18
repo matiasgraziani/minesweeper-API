@@ -29,17 +29,10 @@ public class GameTest {
         assertEquals(DEFAULT_HORIZONTAL_SIZE, game.getHorizontalSize());
         assertEquals(DEFAULT_VERTICAL_SIZE, game.getVerticalSize());
         assertEquals(DEFAULT_MINES_NUM, game.getMines());
-        assertNotNull(game.getStart());
+
+        assertNull(game.getStart());
         assertNull(game.getEnd());
-
-        assertEquals(DEFAULT_HORIZONTAL_SIZE*DEFAULT_VERTICAL_SIZE, game.getCells().size());
-
-        Integer mines = 0;
-        for (Cell cell:game.getCells()) {
-            if(cell.getMine())
-                mines++;
-        }
-        assertEquals(DEFAULT_MINES_NUM, mines);
+        assertEquals(0, game.getCells().size());
     }
 
     @Test
@@ -68,6 +61,9 @@ public class GameTest {
                 DEFAULT_VERTICAL_SIZE,
                 1
         );
+        //This should happen on first click, but we will do it now
+        game.start(1,1);
+
         //Remove all mines
         game.getCells().stream().forEach(cell -> cell.setMine(Boolean.FALSE));
 
@@ -121,6 +117,8 @@ public class GameTest {
                 DEFAULT_VERTICAL_SIZE,
                 DEFAULT_MINES_NUM
         );
+        //This should happen on first click, but we will do it now
+        game.start(1,1);
 
         assertTrue(game.findCell(2,2).isPresent());
     }
@@ -136,8 +134,49 @@ public class GameTest {
                 DEFAULT_VERTICAL_SIZE,
                 DEFAULT_MINES_NUM
         );
-
+        game.start(1,1);
         assertFalse(game.findCell(5,7).isPresent());
     }
 
+    @Test
+    /**
+     * When creating a game should create with all params set correctly
+     */
+    public void testStartGameSuccess() throws Exception {
+        Game game = new Game(
+                new Player("Test"),
+                DEFAULT_HORIZONTAL_SIZE,
+                DEFAULT_VERTICAL_SIZE,
+                DEFAULT_MINES_NUM
+        );
+        Integer horizontal = 2;
+        Integer vertical = 3;
+
+        game.start(horizontal, vertical);
+
+        assertEquals("Test", game.getPlayer().getName());
+        assertEquals(DEFAULT_HORIZONTAL_SIZE, game.getHorizontalSize());
+        assertEquals(DEFAULT_VERTICAL_SIZE, game.getVerticalSize());
+        assertEquals(DEFAULT_MINES_NUM, game.getMines());
+
+        assertNotNull(game.getStart());
+        assertNull(game.getEnd());
+        assertEquals(DEFAULT_HORIZONTAL_SIZE*DEFAULT_VERTICAL_SIZE, game.getCells().size());
+
+        Integer mines = 0;
+        for (Cell cell:game.getCells()) {
+            if(cell.getMine())
+                mines++;
+        }
+        assertEquals(DEFAULT_MINES_NUM, mines);
+
+        //Check the original cell (the one we set on the start has not a mine
+        assertEquals(
+                0,
+                game.getCells().stream()
+                    .filter(cell -> cell.getHorizontal().equals(horizontal) && cell.getVertical().equals(vertical))
+                    .filter(cell -> cell.getMine())
+                    .count()
+        );
+    }
 }

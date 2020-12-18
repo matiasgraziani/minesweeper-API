@@ -30,6 +30,7 @@ public class GameServiceTest {
                 DEFAULT_VERTICAL_SIZE,
                 DEFAULT_MINES_NUM
         );
+        game.start(0,0);
 
         service.checkFinishGame(game);
         assertNull(game.getEnd());
@@ -48,6 +49,8 @@ public class GameServiceTest {
                 DEFAULT_VERTICAL_SIZE,
                 DEFAULT_MINES_NUM
         );
+        game.start(0,0);
+
         //We do this to only leave Hide the ones with mines
         game.getCells().stream().filter(cell -> !cell.getMine())
                 .forEach(cell -> cell.setStatus(MineStatus.Empty));
@@ -71,6 +74,8 @@ public class GameServiceTest {
                 DEFAULT_VERTICAL_SIZE,
                 DEFAULT_MINES_NUM
         );
+        game.start(0,0);
+
         //We do this to only leave Hide the ones with mines
         game.getCells().stream().filter(cell -> !cell.getMine())
                 .forEach(cell -> cell.setStatus(MineStatus.Empty));
