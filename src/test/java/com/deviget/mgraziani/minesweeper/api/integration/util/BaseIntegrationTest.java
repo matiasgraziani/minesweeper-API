@@ -40,6 +40,9 @@ public abstract class BaseIntegrationTest {
         this.mockMvc = webAppContextSetup(webApplicationContext).build();
     }
 
+    /**
+     * Helper to create a player
+     */
     protected void createDefaultPlayer() throws Exception {
         Player player = new Player();
         player.setName("Matias");
@@ -49,6 +52,9 @@ public abstract class BaseIntegrationTest {
                 .andExpect(status().isCreated());
     }
 
+    /**
+     * Helper to create a game
+     */
     protected void createDefaultGame() throws Exception {
         mockMvc.perform(put("/game/"+DEFAULT_PLAYER)
                 .contentType(MediaType.APPLICATION_JSON_VALUE))

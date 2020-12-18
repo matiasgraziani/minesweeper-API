@@ -20,6 +20,9 @@ public class GameServiceTest {
     private GameService service;
 
     @Test
+    /**
+     * checkFinishGame should don't change things if end hasn't finish
+     */
     public void testCheckFinishGameContinue() throws Exception {
         Game game = new Game(
                 new Player("Test"),
@@ -35,6 +38,9 @@ public class GameServiceTest {
     }
 
     @Test
+    /**
+     * checkFinishGame should adjust all cells to show the value/mine it has ans set the end time
+     */
     public void testCheckFinishGameEnd() throws Exception {
         Game game = new Game(
                 new Player("Test"),
@@ -55,6 +61,9 @@ public class GameServiceTest {
     }
 
     @Test
+    /**
+     * checkFinishGame should adjust all cells to show the value/mine it has
+     */
     public void testCheckFinishGameLostGame() throws Exception {
         Game game = new Game(
                 new Player("Test"),

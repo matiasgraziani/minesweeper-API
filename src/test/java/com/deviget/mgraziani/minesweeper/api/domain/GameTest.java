@@ -14,6 +14,9 @@ import static org.junit.Assert.*;
 public class GameTest {
 
     @Test
+    /**
+     * When creating a game should create with all params set correctly
+     */
     public void testCreateGameSuccess() throws Exception {
         Game game = new Game(
                 new Player("Test"),
@@ -40,6 +43,9 @@ public class GameTest {
     }
 
     @Test
+    /**
+     * When creating a game with params as null should throw an InvalidParamsException
+     */
     public void testCreateGameEmpty() {
         assertThrows(InvalidParamsException.class, ()-> {
             Game game = new Game(
@@ -52,6 +58,9 @@ public class GameTest {
     }
 
     @Test
+    /**
+     * getProximityMines should return the number of mines around the cell
+     */
     public void testGetProximityMines() throws Exception {
         Game game = new Game(
                 new Player("Test"),
@@ -84,6 +93,9 @@ public class GameTest {
     }
 
     @Test
+    /**
+     * getProximityMines should return 0 if no mines around the cell
+     */
     public void testGetProximityMinesEmpty() throws Exception {
         Game game = new Game(
                 new Player("Test"),
@@ -99,6 +111,9 @@ public class GameTest {
     }
 
     @Test
+    /**
+     * findCell should return the cell with the given position
+     */
     public void testFindCell() throws Exception {
         Game game = new Game(
                 new Player("Test"),
@@ -111,6 +126,9 @@ public class GameTest {
     }
 
     @Test
+    /**
+     * findCell should not return a cell if the position doesn't exist
+     */
     public void testFindCellNotFound() throws Exception {
         Game game = new Game(
                 new Player("Test"),

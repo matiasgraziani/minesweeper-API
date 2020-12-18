@@ -63,6 +63,9 @@ public class CellServiceTest {
     }
 
     @Test
+    /**
+     * flagCell should change cell status to flagged
+     */
     public void testFlagCell() throws Exception {
         mockGetGame();
         Game game = service.flagCell(DEFAULT_PLAYER, 2, 3);
@@ -71,6 +74,9 @@ public class CellServiceTest {
     }
 
     @Test
+    /**
+     * flagCell should change cell status to Hided if already is flagged
+     */
     public void testFlagCellInverted() throws Exception {
         Game game = defaultGame();
         Cell cell = game.findCell(2,3).get();
@@ -83,6 +89,9 @@ public class CellServiceTest {
     }
 
     @Test
+    /**
+     * flagCell should change cell status to flagged if Question
+     */
     public void testFlagCellWithQuestion() throws Exception {
         Game game = defaultGame();
         Cell cell = game.findCell(2,3).get();
@@ -95,6 +104,9 @@ public class CellServiceTest {
     }
 
     @Test
+    /**
+     * flagCell should change cell status to flagged if Red Flagged
+     */
     public void testFlagCellWithRedFlag() throws Exception {
         Game game = defaultGame();
         Cell cell = game.findCell(2,3).get();
@@ -107,6 +119,9 @@ public class CellServiceTest {
     }
 
     @Test
+    /**
+     * questionCell should change cell status to question
+     */
     public void testQuestionCell() throws Exception {
         mockGetGame();
         Game game = service.questionCell(DEFAULT_PLAYER, 2, 3);
@@ -115,6 +130,9 @@ public class CellServiceTest {
     }
 
     @Test
+    /**
+     * questionCell should change cell status to hided if question
+     */
     public void testQuestionCellInverted() throws Exception {
         Game game = defaultGame();
         Cell cell = game.findCell(2,3).get();
@@ -127,6 +145,9 @@ public class CellServiceTest {
     }
 
     @Test
+    /**
+     * questionCell should change cell status to question if flagged
+     */
     public void testQuestionCellWithFlagged() throws Exception {
         Game game = defaultGame();
         Cell cell = game.findCell(2,3).get();
@@ -139,6 +160,9 @@ public class CellServiceTest {
     }
 
     @Test
+    /**
+     * questionCell should change cell status to question if red flagged
+     */
     public void testQuestionCellWithRedFlag() throws Exception {
         Game game = defaultGame();
         Cell cell = game.findCell(2,3).get();
@@ -151,6 +175,9 @@ public class CellServiceTest {
     }
 
     @Test
+    /**
+     * redFlagCell should change cell status to red flagged
+     */
     public void testRedFlagCell() throws Exception {
         mockGetGame();
         Game game = service.redFlagCell(DEFAULT_PLAYER, 2, 3);
@@ -159,6 +186,9 @@ public class CellServiceTest {
     }
 
     @Test
+    /**
+     * redFlagCell should change cell status to hided if red flagged
+     */
     public void testRedFlagCellInverted() throws Exception {
         Game game = defaultGame();
         Cell cell = game.findCell(2,3).get();
@@ -171,6 +201,9 @@ public class CellServiceTest {
     }
 
     @Test
+    /**
+     * redFlagCell should change cell status to red flagged if flagged
+     */
     public void testRedFlagCellWithFlagged() throws Exception {
         Game game = defaultGame();
         Cell cell = game.findCell(2,3).get();
@@ -183,6 +216,9 @@ public class CellServiceTest {
     }
 
     @Test
+    /**
+     * redFlagCell should change cell status to red flagged if question
+     */
     public void testRedFlagCellWithQuestion() throws Exception {
         Game game = defaultGame();
         Cell cell = game.findCell(2,3).get();
@@ -195,6 +231,9 @@ public class CellServiceTest {
     }
 
     @Test
+    /**
+     * clickCell should change cell status to valued if cell has mine next to it
+     */
     public void testClickCellValue() throws Exception {
         Game game = defaultGame();
         Cell cell = game.findCell(2,3).get();
@@ -210,6 +249,9 @@ public class CellServiceTest {
     }
 
     @Test
+    /**
+     * clickCell should change cell status to exploited and end game if has mine
+     */
     public void testClickCellMine() throws Exception {
         Game game = defaultGame();
         Cell cell = game.findCell(2,3).get();
@@ -227,6 +269,9 @@ public class CellServiceTest {
     }
 
     @Test
+    /**
+     * clickCell should change cell status to empty and check next mines in recursive way
+     */
     public void testClickCellEmptyCell() throws Exception {
         mockGetGame(diagonalGame());
         Game game = service.clickCell(DEFAULT_PLAYER, 4,1);
@@ -257,4 +302,73 @@ public class CellServiceTest {
             }
         }
     }
+
+    @Test
+    /**
+     * flagCell should not do nothing if cell doesn't exist
+     */
+    public void testFlagCellInvalid() throws Exception {
+        mockGetGame();
+        Game game = service.flagCell(DEFAULT_PLAYER, -1, -1);
+        assertNotNull(game);
+        assertFalse(game.findCell(-1, -1).isPresent());
+        assertFalse(
+                game.getCells().stream()
+                        .filter(cell -> cell.getStatus().equals(MineStatus.Flagged))
+                        .findFirst()
+                        .isPresent()
+        );
+    }
+
+    @Test
+    /**
+     * redFlagCell should not do nothing if cell doesn't exist
+     */
+    public void testRedFlagCellInvalid() throws Exception {
+        mockGetGame();
+        Game game = service.redFlagCell(DEFAULT_PLAYER, -1, -1);
+        assertNotNull(game);
+        assertFalse(game.findCell(-1, -1).isPresent());
+        assertFalse(
+                game.getCells().stream()
+                        .filter(cell -> cell.getStatus().equals(MineStatus.RedFlag))
+                        .findFirst()
+                        .isPresent()
+        );
+    }
+
+    @Test
+    /**
+     * questionCell should not do nothing if cell doesn't exist
+     */
+    public void testQuestionCellInvalid() throws Exception {
+        mockGetGame();
+        Game game = service.questionCell(DEFAULT_PLAYER, -1, -1);
+        assertNotNull(game);
+        assertFalse(game.findCell(-1, -1).isPresent());
+        assertFalse(
+                game.getCells().stream()
+                        .filter(cell -> cell.getStatus().equals(MineStatus.QuestionFlag))
+                        .findFirst()
+                        .isPresent()
+        );
+    }
+
+    @Test
+    /**
+     * clickCell should not do nothing if cell doesn't exist
+     */
+    public void testClickCellInvalid() throws Exception {
+        mockGetGame();
+        Game game = service.clickCell(DEFAULT_PLAYER, -1, -1);
+        assertNotNull(game);
+        assertFalse(game.findCell(-1, -1).isPresent());
+        assertFalse(
+                game.getCells().stream()
+                        .filter(cell -> !cell.getStatus().equals(MineStatus.Hided))
+                        .findFirst()
+                        .isPresent()
+        );
+    }
+
 }
