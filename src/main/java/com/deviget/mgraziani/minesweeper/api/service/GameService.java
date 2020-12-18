@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -26,6 +27,15 @@ public class GameService {
 
     public Game create(Long userId) throws Exception {
         Player player = playerRepository.findById(userId).get();
+
+        //First I disable any previous game
+        Optional<Game> gameOptional = this.get(player);
+        if(gameOptional.isPresent()){
+            Game game = gameOptional.get();
+            game.setActive(Boolean.FALSE);
+            gameRepository.save(game);
+        }
+
         Game game = new Game(
                 player,
                 DEFAULT_HORIZONTAL_SIZE,
@@ -36,8 +46,14 @@ public class GameService {
         return game;
     }
 
-    public Optional<Game> get(Long userId) {
-        return gameRepository.findById(userId);
+
+    public Optional<Game> get(Long playerId) {
+        Player player = playerRepository.findById(playerId).get();
+        return this.get(player);
+    }
+
+    public Optional<Game> get(Player player) {
+        return gameRepository.findByPlayerAndActiveTrue(player);
     }
 
     public void checkFinishGame(Game game){
@@ -59,5 +75,10 @@ public class GameService {
                     .filter(cell -> !cell.getStatus().equals(MineStatus.Exploited))
                     .forEach(cell -> cell.setStatus(MineStatus.Flagged));
         }
+        game.setActive(Boolean.FALSE);
+    }
+
+    public List<Game> list() {
+        return gameRepository.findAll();
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -29,6 +30,11 @@ public class GameController {
         }else{
             return new ResponseEntity<Game>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @GetMapping(produces = "application/json")
+    public ResponseEntity<List<Game>> list(){
+        return new ResponseEntity<List<Game>>(gameService.list(), HttpStatus.OK);
     }
 
 }

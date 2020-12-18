@@ -20,13 +20,13 @@ public class PlayerIntegrationTest extends BaseIntegrationTest {
      */
     public void testCreatePlayer() throws Exception {
         Player player = new Player();
-        player.setName("Matias");
+        player.setName("Player 1");
         ResultActions result = mockMvc.perform(post("/player")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(player)))
                 .andExpect(status().isCreated());
         String content = result.andReturn().getResponse().getContentAsString();
-        assertEquals("{\"id\":1,\"name\":\"Matias\"}", content);
+        assertEquals("{\"id\":1,\"name\":\"Player 1\"}", content);
     }
 
     @Test
@@ -50,7 +50,7 @@ public class PlayerIntegrationTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk());
         String content = result2.andReturn().getResponse().getContentAsString();
-        assertEquals("{\"id\":1,\"name\":\"Matias\"}", content);
+        assertEquals("{\"id\":1,\"name\":\"Player 1\"}", content);
     }
 
     @Test

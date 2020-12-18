@@ -44,8 +44,15 @@ public abstract class BaseIntegrationTest {
      * Helper to create a player
      */
     protected void createDefaultPlayer() throws Exception {
+        createDefaultPlayer("Player 1");
+    }
+
+    /**
+     * Helper to create a player
+     */
+    protected void createDefaultPlayer(String name) throws Exception {
         Player player = new Player();
-        player.setName("Matias");
+        player.setName(name);
         mockMvc.perform(post("/player")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(player)))

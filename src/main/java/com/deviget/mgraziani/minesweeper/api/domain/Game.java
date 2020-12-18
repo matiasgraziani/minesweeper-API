@@ -51,6 +51,8 @@ public class Game {
 
     private LocalDateTime end;
 
+    private Boolean active = Boolean.TRUE;
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name="game_id")
     private Set<Cell> cells = new HashSet<>();
@@ -163,5 +165,13 @@ public class Game {
 
     public void setEnd(LocalDateTime end) {
         this.end = end;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 }
