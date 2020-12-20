@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Entity
+@Table(name = "game")
 public class Game {
 
     public static Integer MAX_SIZE = 20;

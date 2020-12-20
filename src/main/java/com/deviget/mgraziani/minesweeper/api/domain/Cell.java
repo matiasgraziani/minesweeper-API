@@ -3,6 +3,7 @@ package com.deviget.mgraziani.minesweeper.api.domain;
 import javax.persistence.*;
 
 @Entity
+@Table(name = "cell")
 public class Cell {
 
     @Id
